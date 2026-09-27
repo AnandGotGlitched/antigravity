@@ -1,0 +1,14 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/backend/main.py. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -78,5 +78,7 @@
+ 
+ if __name__ == "__main__":
+     import uvicorn
+-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
++    import os
++    port = int(os.environ.get("PORT", 8000))
++    uvicorn.run("main:app", host="0.0.0.0", port=port)
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

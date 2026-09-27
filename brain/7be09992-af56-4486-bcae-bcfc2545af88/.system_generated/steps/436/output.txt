@@ -1,0 +1,6 @@
+
+The command exited with code 128.
+There were sandbox errors that may or may not be related to the failure. If you think the failure is because of running in the sandbox, you can run the command again with `BypassSandbox` set to true to request explicit user permission.
+Output:
+fatal: not a git repository (or any of the parent directories): .git
+

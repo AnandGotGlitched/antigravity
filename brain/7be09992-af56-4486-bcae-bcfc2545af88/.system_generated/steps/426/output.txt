@@ -1,0 +1,10 @@
+
+The command exited with code 0.
+Output:
+total 32
+drwxr-xr-x@ 5 anandgopaltiwary  staff   160 Sep 23 23:36 .
+drwxr-xr-x@ 6 anandgopaltiwary  staff   192 Sep 27 14:25 ..
+-rw-r--r--@ 1 anandgopaltiwary  staff  2148 Sep 27 22:52 main.py
+-rw-r--r--@ 1 anandgopaltiwary  staff    21 Sep 23 23:34 requirements.txt
+-rw-r--r--@ 1 anandgopaltiwary  staff  4269 Sep 24 00:33 sgp4_calc.py
+

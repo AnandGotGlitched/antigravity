@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:8000' 
+        : 'https://antigravity-nqy9.onrender.com';
+
     // --- TAB SWITCHING LOGIC ---
     const tabLive = document.getElementById('tabLive');
     const tab3D = document.getElementById('tab3D');
@@ -56,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tabCalc.addEventListener('click', () => switchTab(tabCalc));
 
     // --- CESIUM 3D VIEWER LOGIC ---
-    const TLE_API_URL = 'http://127.0.0.1:8000/api/tles';
+    const TLE_API_URL = `${API_BASE_URL}/api/tles`;
     let satelliteEntities = {};
 
     async function initCesium() {
@@ -529,7 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorState = document.getElementById('errorState');
     const errorMessage = document.getElementById('errorMessage');
 
-    const API_URL = 'http://127.0.0.1:8000/api/conjunctions';
+    const API_URL = `${API_BASE_URL}/api/conjunctions`;
 
     const fetchConjunctionData = async () => {
         // UI Reset
@@ -1004,7 +1008,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const time = parseFloat(inputTime.value);
 
         try {
-            const res = await fetch('http://127.0.0.1:8000/api/mission-risk', {
+            const res = await fetch(`${API_BASE_URL}/api/mission-risk`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

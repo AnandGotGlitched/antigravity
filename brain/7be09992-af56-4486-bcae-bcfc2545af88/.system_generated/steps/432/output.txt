@@ -1,0 +1,7 @@
+
+The command exited with code 0.
+Output:
+import math
+from datetime import datetime, timedelta
+from sgp4.api import Satrec, WGS72, jday
+
