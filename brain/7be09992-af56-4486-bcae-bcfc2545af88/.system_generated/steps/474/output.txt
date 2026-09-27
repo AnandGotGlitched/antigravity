@@ -1,0 +1,16 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -144,8 +144,8 @@
+             <!-- Data Table -->
+             <div id="dashboardContent" class="hidden w-full">
+                 <div class="bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden">
+-                    <div class="overflow-x-auto">
+-                        <table class="w-full text-left border-collapse whitespace-nowrap cursor-pointer">
++                    <div class="w-full overflow-x-auto">
++                        <table class="w-full min-w-[800px] text-left border-collapse whitespace-nowrap cursor-pointer">
+                             <thead>
+                                 <tr class="bg-white/5 border-b border-white/10 text-gray-300 text-xs uppercase tracking-widest">
+                                     <th class="p-5 font-semibold">Objects Involved</th>
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

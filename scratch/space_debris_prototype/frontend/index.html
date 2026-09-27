@@ -72,6 +72,14 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.3);
         }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body class="bg-cinematic text-white antialiased min-h-screen flex flex-col overflow-x-hidden relative">
@@ -84,8 +92,8 @@
 
     <!-- Minimalist Header -->
     <header class="pt-8 px-6 md:px-8 w-full z-10 flex flex-col items-center">
-        <div class="w-full max-w-6xl flex items-center justify-between">
-            <h1 class="text-xl md:text-3xl font-bold tracking-[0.2em] uppercase text-white shadow-sm">
+        <div class="w-full max-w-6xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <h1 class="text-xl md:text-3xl font-bold tracking-[0.2em] uppercase text-white shadow-sm text-center md:text-left">
                 Orbital Guard <span class="text-gray-400 font-light">// Command Center</span>
             </h1>
             <!-- Action Button for Live Tracking only (hidden in calculator mode) -->
@@ -100,14 +108,14 @@
         </div>
 
         <!-- Tab Navigation -->
-        <nav class="w-full max-w-6xl mt-8 flex space-x-12 border-b border-white/10">
-            <button id="tabLive" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-white text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] shadow-white/50">
+        <nav class="w-full max-w-6xl mt-8 flex space-x-8 md:space-x-12 border-b border-white/10 overflow-x-auto whitespace-nowrap hide-scrollbar">
+            <button id="tabLive" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-white text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] shadow-white/50 shrink-0">
                 Live Tracking
             </button>
-            <button id="tab3D" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-transparent text-gray-500 hover:text-gray-300">
+            <button id="tab3D" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-transparent text-gray-500 hover:text-gray-300 shrink-0">
                 3D Orbit Viewer
             </button>
-            <button id="tabCalc" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-transparent text-gray-500 hover:text-gray-300">
+            <button id="tabCalc" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-transparent text-gray-500 hover:text-gray-300 shrink-0">
                 Risk Calculator
             </button>
         </nav>
@@ -136,8 +144,8 @@
             <!-- Data Table -->
             <div id="dashboardContent" class="hidden w-full">
                 <div class="bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse whitespace-nowrap cursor-pointer">
+                    <div class="w-full overflow-x-auto">
+                        <table class="w-full min-w-[800px] text-left border-collapse whitespace-nowrap cursor-pointer">
                             <thead>
                                 <tr class="bg-white/5 border-b border-white/10 text-gray-300 text-xs uppercase tracking-widest">
                                     <th class="p-5 font-semibold">Objects Involved</th>
@@ -155,7 +163,7 @@
             </div>
 
             <!-- CAM Drawer (Hidden by default, slides in from right) -->
-            <div id="camDrawer" class="fixed top-0 right-0 h-full w-96 bg-black/90 backdrop-blur-xl border-l border-gray-800 z-50 transform translate-x-full transition-transform duration-500 flex flex-col p-6 overflow-y-auto">
+            <div id="camDrawer" class="fixed top-0 right-0 h-full w-full md:w-[450px] bg-black/90 backdrop-blur-xl border-l border-gray-800 z-50 transform translate-x-full transition-transform duration-500 flex flex-col p-4 md:p-6 overflow-y-auto">
                 <div class="flex justify-between items-center border-b border-gray-700 pb-4 mb-6">
                     <h2 class="text-lg uppercase tracking-widest font-semibold text-white">CAM Planner</h2>
                     <button id="closeCamDrawer" class="text-gray-400 hover:text-white transition">
@@ -247,11 +255,11 @@
             <div id="cesiumContainer" class="w-full h-full"></div>
             
             <!-- Virtual Joystick Zone -->
-            <div id="joystick-zone" class="absolute bottom-10 left-10 w-32 h-32 z-50"></div>
+            <div id="joystick-zone" class="absolute bottom-32 md:bottom-10 left-4 md:left-10 w-32 h-32 z-50"></div>
 
 
             <!-- SpaceX Floating Telemetry HUD -->
-            <div id="telemetryHud" class="hidden absolute top-6 right-6 z-40 w-80 bg-black/85 backdrop-blur-xl border border-[#00ffff]/30 rounded-xl p-5 shadow-2xl text-white font-mono flex flex-col">
+            <div id="telemetryHud" class="hidden absolute top-4 md:top-6 right-[5%] md:right-6 z-40 w-[90%] md:w-80 bg-black/85 backdrop-blur-xl border border-[#00ffff]/30 rounded-xl p-5 shadow-2xl text-white font-mono flex flex-col text-xs md:text-sm">
                 <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-4">
                     <div class="flex items-center space-x-2">
                         <div class="w-2 h-2 rounded-full bg-green-400 animate-ping"></div>
@@ -327,8 +335,8 @@
             </div>
 
             <!-- Interactive Time Machine -->
-            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-40 w-3/4 bg-black/70 backdrop-blur-xl rounded-2xl px-6 py-4 shadow-2xl border border-white/10 flex flex-col items-center space-y-3">
-                <div id="temporalTimeLabel" class="text-sm font-mono text-[#00ffff] tracking-widest drop-shadow-[0_0_8px_rgba(0,255,255,0.8)] font-bold">T-PLUS 00:00:00 | UTC: --</div>
+            <div class="absolute bottom-20 md:bottom-8 left-1/2 transform -translate-x-1/2 z-40 w-[90%] md:w-1/2 bg-black/70 backdrop-blur-xl rounded-2xl px-6 py-4 shadow-2xl border border-white/10 flex flex-col items-center space-y-3 text-xs md:text-base">
+                <div id="temporalTimeLabel" class="text-xs md:text-sm font-mono text-[#00ffff] tracking-widest drop-shadow-[0_0_8px_rgba(0,255,255,0.8)] font-bold">T-PLUS 00:00:00 | UTC: --</div>
                 <input type="range" id="temporalScrubber" min="-12" max="12" step="0.1" value="0" class="w-full cursor-pointer">
                 
                 <!-- Playback Controls -->

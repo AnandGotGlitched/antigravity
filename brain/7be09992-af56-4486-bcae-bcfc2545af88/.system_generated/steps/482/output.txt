@@ -1,0 +1,19 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -255,11 +255,11 @@
+             <div id="cesiumContainer" class="w-full h-full"></div>
+             
+             <!-- Virtual Joystick Zone -->
+-            <div id="joystick-zone" class="absolute bottom-10 left-10 w-32 h-32 z-50"></div>
++            <div id="joystick-zone" class="absolute bottom-32 md:bottom-10 left-4 md:left-10 w-32 h-32 z-50"></div>
+ 
+ 
+             <!-- SpaceX Floating Telemetry HUD -->
+-            <div id="telemetryHud" class="hidden absolute top-6 right-6 z-40 w-80 bg-black/85 backdrop-blur-xl border border-[#00ffff]/30 rounded-xl p-5 shadow-2xl text-white font-mono flex flex-col">
++            <div id="telemetryHud" class="hidden absolute top-4 md:top-6 right-[5%] md:right-6 z-40 w-[90%] md:w-80 bg-black/85 backdrop-blur-xl border border-[#00ffff]/30 rounded-xl p-5 shadow-2xl text-white font-mono flex flex-col text-xs md:text-sm">
+                 <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-4">
+                     <div class="flex items-center space-x-2">
+                         <div class="w-2 h-2 rounded-full bg-green-400 animate-ping"></div>
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

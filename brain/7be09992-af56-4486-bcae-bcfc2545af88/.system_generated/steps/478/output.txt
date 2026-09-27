@@ -1,0 +1,14 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -163,7 +163,7 @@
+             </div>
+ 
+             <!-- CAM Drawer (Hidden by default, slides in from right) -->
+-            <div id="camDrawer" class="fixed top-0 right-0 h-full w-96 bg-black/90 backdrop-blur-xl border-l border-gray-800 z-50 transform translate-x-full transition-transform duration-500 flex flex-col p-6 overflow-y-auto">
++            <div id="camDrawer" class="fixed top-0 right-0 h-full w-full md:w-[450px] bg-black/90 backdrop-blur-xl border-l border-gray-800 z-50 transform translate-x-full transition-transform duration-500 flex flex-col p-4 md:p-6 overflow-y-auto">
+                 <div class="flex justify-between items-center border-b border-gray-700 pb-4 mb-6">
+                     <h2 class="text-lg uppercase tracking-widest font-semibold text-white">CAM Planner</h2>
+                     <button id="closeCamDrawer" class="text-gray-400 hover:text-white transition">
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
