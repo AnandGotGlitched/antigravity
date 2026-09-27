@@ -1,0 +1,29 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -132,6 +132,10 @@
+                     
+                     const isDebris = sat.name.includes('DEB');
+                     const objType = isDebris ? 'Space Debris' : 'Active Satellite';
++                    const reticleColor = isDebris ? '#ff4444' : '#00ffff';
++                    
++                    const svgData = `<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="14" stroke="${reticleColor}" stroke-width="2" fill="none" opacity="0.8"/><circle cx="16" cy="16" r="3" fill="${reticleColor}"/></svg>`;
++                    const svgURI = 'data:image/svg+xml;base64,' + btoa(svgData);
+ 
+                     const entity = viewer.entities.add({
+                         name: sat.name,
+@@ -138,8 +138,7 @@
+-                        point: {
+-                            pixelSize: 8,
+-                            color: Cesium.Color.fromCssColorString('#00ffff'), // glowing cyan
+-                            outlineColor: Cesium.Color.WHITE,
+-                            outlineWidth: 2,
++                        billboard: {
++                            image: svgURI,
++                            width: 24,
++                            height: 24,
+                         },
+                         polyline: {
+                             positions: positions,
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

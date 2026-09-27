@@ -1,0 +1,69 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -286,6 +286,63 @@
+         errorState.classList.remove('hidden');
+     };
+ 
++    // --- CAM DRAWER LOGIC ---
++    const camDrawer = document.getElementById('camDrawer');
++    const closeCamDrawerBtn = document.getElementById('closeCamDrawer');
++    const camObject1 = document.getElementById('camObject1');
++    const camObject2 = document.getElementById('camObject2');
++    const camDeltaVSlider = document.getElementById('camDeltaVSlider');
++    const camDeltaVVal = document.getElementById('camDeltaVVal');
++    const camNewDistVal = document.getElementById('camNewDistVal');
++    const camRiskBadge = document.getElementById('camRiskBadge');
++    const camDistBar = document.getElementById('camDistBar');
++
++    let currentOriginalDist = 0;
++
++    function openCamDrawer(item) {
++        // Populate static data
++        camObject1.textContent = item.object1;
++        camObject2.textContent = item.object2;
++        currentOriginalDist = item.min_distance_km;
++        
++        // Reset slider
++        camDeltaVSlider.value = '0.0';
++        updateCamSimulation();
++
++        // Slide in
++        camDrawer.classList.remove('translate-x-full');
++    }
++
++    closeCamDrawerBtn.addEventListener('click', () => {
++        camDrawer.classList.add('translate-x-full');
++    });
++
++    camDeltaVSlider.addEventListener('input', updateCamSimulation);
++
++    function updateCamSimulation() {
++        const dv = parseFloat(camDeltaVSlider.value);
++        camDeltaVVal.textContent = dv.toFixed(1);
++
++        // Simulation: 0.1 m/s adds 50 km distance
++        const newDist = currentOriginalDist + (dv * 500);
++        camNewDistVal.textContent = `${newDist.toFixed(1)} km`;
++
++        // Update visuals based on safe threshold (> 50 km is SAFE)
++        if (newDist > 50) {
++            camRiskBadge.textContent = 'SAFE';
++            camRiskBadge.className = 'px-2 py-0.5 text-xs font-bold uppercase tracking-widest rounded-sm border transition-colors duration-300 border-green-500 bg-green-500/20 text-green-400 shadow-[0_0_10px_rgba(74,222,128,0.5)]';
++            camDistBar.className = 'h-full bg-green-400 transition-all duration-300 shadow-[0_0_10px_rgba(74,222,128,0.5)]';
++        } else {
++            camRiskBadge.textContent = 'CRITICAL';
++            camRiskBadge.className = 'px-2 py-0.5 text-xs font-bold uppercase tracking-widest rounded-sm border transition-colors duration-300 border-red-500 bg-red-600/20 text-red-400 shadow-[0_0_10px_rgba(220,38,38,0.8)] animate-pulse';
++            camDistBar.className = 'h-full bg-red-500 transition-all duration-300 shadow-[0_0_10px_rgba(220,38,38,0.8)]';
++        }
++
++        // Fill progress bar (map 0-1000km to 0-100% width)
++        const percent = Math.min((newDist / 1000) * 100, 100);
++        camDistBar.style.width = `${Math.max(percent, 5)}%`;
++    }
++
+     refreshBtn.addEventListener('click', fetchConjunctionData);
+     
+     // Initial fetch for Live Tracking
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

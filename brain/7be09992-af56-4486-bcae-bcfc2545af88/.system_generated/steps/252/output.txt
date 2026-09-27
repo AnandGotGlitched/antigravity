@@ -1,0 +1,18 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -328,8 +328,10 @@
+                         const targetEntity = satelliteEntities[item.object1];
+                         if (window.viewer && targetEntity) {
+                             window.viewer.flyTo(targetEntity, {
+-                                duration: 2.0,
+-                                offset: new Cesium.HeadingPitchRange(0, -Cesium.Math.toRadians(35), 100000)
++                                duration: 1.5,
++                                offset: new Cesium.HeadingPitchRange(0, -Cesium.Math.toRadians(30), 1200000)
++                            }).then(() => {
++                                window.viewer.trackedEntity = targetEntity;
+                             });
+                         }
+                     }, 500); // slight delay to ensure UI transition completes
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

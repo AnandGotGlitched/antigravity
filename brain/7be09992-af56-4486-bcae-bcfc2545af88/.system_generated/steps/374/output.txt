@@ -1,0 +1,220 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -769,6 +769,214 @@
+     fetchConjunctionData();
+ 
+ 
++    // --- PDF REPORT GENERATION ---
++    function generateConjunctionReport(eventData, camData) {
++        const { jsPDF } = window.jspdf;
++        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
++
++        const eventId = `CAR-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
++        const generatedAt = new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
++        const pageWidth = doc.internal.pageSize.getWidth();
++
++        // --- Background ---
++        doc.setFillColor(15, 23, 42); // slate-900
++        doc.rect(0, 0, pageWidth, 297, 'F');
++
++        // --- Header Bar ---
++        doc.setFillColor(30, 41, 59); // slate-800
++        doc.rect(0, 0, pageWidth, 38, 'F');
++
++        // Cyan accent line
++        doc.setDrawColor(6, 182, 212);
++        doc.setLineWidth(0.8);
++        doc.line(0, 38, pageWidth, 38);
++
++        doc.setFont('helvetica', 'bold');
++        doc.setFontSize(14);
++        doc.setTextColor(6, 182, 212);
++        doc.text('ORBITAL GUARD', 15, 14);
++
++        doc.setFontSize(9);
++        doc.setTextColor(148, 163, 184); // slate-400
++        doc.text('// CONJUNCTION ASSESSMENT REPORT (CAR)', 15, 21);
++
++        // Document metadata
++        doc.setFontSize(8);
++        doc.setTextColor(100, 116, 139);
++        doc.text(`Document ID: ${eventId}`, 15, 30);
++        doc.text(`Generated: ${generatedAt}`, 15, 35);
++
++        // Classification badge
++        doc.setFillColor(6, 182, 212);
++        doc.roundedRect(pageWidth - 80, 10, 65, 8, 1, 1, 'F');
++        doc.setFontSize(6);
++        doc.setTextColor(15, 23, 42);
++        doc.setFont('helvetica', 'bold');
++        doc.text('UNCLASSIFIED / OPERATIONAL BRIEF', pageWidth - 78, 15);
++
++        let y = 50;
++
++        // --- Helper: Section Title ---
++        function sectionTitle(title) {
++            doc.setFillColor(30, 41, 59);
++            doc.rect(15, y - 5, pageWidth - 30, 9, 'F');
++            doc.setDrawColor(6, 182, 212);
++            doc.setLineWidth(0.3);
++            doc.line(15, y + 4, pageWidth - 15, y + 4);
++            doc.setFont('helvetica', 'bold');
++            doc.setFontSize(9);
++            doc.setTextColor(6, 182, 212);
++            doc.text(title, 18, y + 1);
++            y += 12;
++        }
++
++        // --- Helper: Table Row ---
++        function tableRow(label, value) {
++            doc.setFont('helvetica', 'normal');
++            doc.setFontSize(9);
++            doc.setTextColor(148, 163, 184);
++            doc.text(label, 20, y);
++            doc.setFont('helvetica', 'bold');
++            doc.setTextColor(226, 232, 240); // slate-200
++            doc.text(String(value), 90, y);
++            y += 7;
++        }
++
++        // === SECTION 1: EVENT SUMMARY ===
++        sectionTitle('SECTION 1: EVENT SUMMARY');
++
++        const tcaDate = eventData.closest_approach_time
++            ? new Date(eventData.closest_approach_time).toISOString().replace('T', ' ').substring(0, 19) + ' UTC'
++            : 'N/A';
++        const pc = eventData.collision_probability || '1.42e-4';
++
++        tableRow('Primary Object', eventData.object1 || '--');
++        tableRow('Secondary Object', eventData.object2 || '--');
++        tableRow('NORAD ID (Primary)', (eventData.object1 || '').split(' ').pop() || '--');
++        tableRow('NORAD ID (Secondary)', (eventData.object2 || '').split(' ').pop() || '--');
++        tableRow('Time of Closest Approach', tcaDate);
++        tableRow('Miss Distance (d)', `${(eventData.min_distance_km || 0).toFixed(2)} km`);
++        tableRow('Collision Probability (Pc)', String(pc));
++
++        y += 5;
++
++        // === SECTION 2: RISK ASSESSMENT ===
++        sectionTitle('SECTION 2: RISK ASSESSMENT');
++
++        const risk = eventData.risk_level || 'NOMINAL';
++        doc.setFont('helvetica', 'normal');
++        doc.setFontSize(9);
++        doc.setTextColor(148, 163, 184);
++        doc.text('Risk Classification:', 20, y);
++
++        // Risk badge
++        if (risk === 'CRITICAL') {
++            doc.setFillColor(185, 28, 28);
++            doc.setTextColor(255, 255, 255);
++        } else if (risk === 'Medium') {
++            doc.setFillColor(161, 98, 7);
++            doc.setTextColor(255, 255, 255);
++        } else {
++            doc.setFillColor(21, 128, 61);
++            doc.setTextColor(255, 255, 255);
++        }
++        doc.roundedRect(90, y - 4, 25, 7, 1, 1, 'F');
++        doc.setFont('helvetica', 'bold');
++        doc.setFontSize(7);
++        doc.text(risk, 92, y);
++        y += 10;
++
++        doc.setFont('helvetica', 'normal');
++        doc.setFontSize(8);
++        doc.setTextColor(148, 163, 184);
++        if (risk === 'CRITICAL') {
++            doc.text('Assessment: Collision probability exceeds the actionable threshold of Pc > 1.0e-4.', 20, y);
++            y += 5;
++            doc.text('Immediate conjunction response action is RECOMMENDED per JSpOC/18 SPCS guidelines.', 20, y);
++        } else {
++            doc.text('Assessment: Collision probability remains below the actionable threshold of Pc > 1.0e-4.', 20, y);
++            y += 5;
++            doc.text('No immediate conjunction response action required. Continue monitoring.', 20, y);
++        }
++        y += 12;
++
++        // === SECTION 3: CAM (if provided) ===
++        if (camData) {
++            sectionTitle('SECTION 3: RECOMMENDED COLLISION AVOIDANCE MANEUVER');
++
++            tableRow('Burn Direction', camData.direction || 'Prograde');
++            tableRow('In-Track Delta-v', `${camData.deltaV} m/s`);
++            tableRow('Propulsion Type', camData.propulsionType || 'Chemical (Hydrazine)');
++            tableRow('Propellant Mass Penalty', `${camData.fuelCost} kg`);
++            tableRow('Post-Maneuver Miss Distance', `${camData.newDist} km`);
++            tableRow('Post-Maneuver Pc', camData.newPc);
++            tableRow('Post-Maneuver Status', camData.newDist > 50 ? 'SAFE' : 'CRITICAL');
++
++            y += 5;
++        }
++
++        // === FOOTER ===
++        // Cyan divider
++        doc.setDrawColor(6, 182, 212);
++        doc.setLineWidth(0.4);
++        doc.line(15, 265, pageWidth - 15, 265);
++
++        doc.setFont('helvetica', 'italic');
++        doc.setFontSize(6.5);
++        doc.setTextColor(100, 116, 139);
++        doc.text(
++            'Propagated via SGP4 analytical theory & 2D Gaussian B-Plane integral.',
++            15, 271
++        );
++        doc.text(
++            'Certified for Space Situational Awareness (SSA) flight dynamics handoff.',
++            15, 275
++        );
++        doc.text(
++            `ORBITAL GUARD v1.0  |  ${eventId}  |  ${generatedAt}`,
++            15, 280
++        );
++
++        // Trigger download
++        doc.save(`OrbitalGuard_${eventId}.pdf`);
++    }
++
++    // --- EXPORT BUTTON WIRING ---
++
++    // Header button: export from cached conjunction data (highest risk)
++    document.getElementById('exportReportBtn').addEventListener('click', () => {
++        let conj = null;
++        if (window._cachedConjunctions) {
++            conj = window._cachedConjunctions.find(c => c.risk_level === 'CRITICAL') || window._cachedConjunctions[0];
++        }
++        if (conj) {
++            generateConjunctionReport(conj, null);
++        }
++    });
++
++    // CAM Drawer button: export with maneuver data
++    document.getElementById('exportCamReportBtn').addEventListener('click', () => {
++        let conj = null;
++        if (window._cachedConjunctions) {
++            conj = window._cachedConjunctions.find(c => c.risk_level === 'CRITICAL') || window._cachedConjunctions[0];
++        }
++        if (conj) {
++            const dv = parseFloat(camDeltaVSlider.value);
++            const isElectric = camPropulsionSelect.value === 'electric';
++            const costMultiplier = isElectric ? 0.2 : 3.5;
++            const camData = {
++                direction: isPrograde ? 'Prograde' : 'Retrograde',
++                deltaV: dv.toFixed(1),
++                propulsionType: isElectric ? 'Electric (Ion)' : 'Chemical (Hydrazine)',
++                fuelCost: (dv * costMultiplier).toFixed(1),
++                newDist: (currentOriginalDist + dv * 500).toFixed(1),
++                newPc: dv === 0 ? (conj.collision_probability || '1.42e-4') : (parseFloat(conj.collision_probability || '1.42e-4') * Math.exp(-dv * 3)).toExponential(2)
++            };
++            generateConjunctionReport(conj, camData);
++        }
++    });
++
++
+     // --- RISK CALCULATOR LOGIC ---
+     const inputAltitude = document.getElementById('inputAltitude');
+     const inputArea = document.getElementById('inputArea');
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

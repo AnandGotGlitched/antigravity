@@ -1,0 +1,32 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -30,6 +30,7 @@
+         if (activeTab === tabLive) {
+             viewLive.classList.remove('hidden');
+             refreshBtn.classList.remove('hidden');
++            if (window.viewer) window.viewer.useDefaultRenderLoop = false;
+         } else if (activeTab === tab3D) {
+             view3D.classList.remove('hidden');
+             refreshBtn.classList.add('hidden');
+@@ -36,8 +36,11 @@
+                 initCesium();
+                 cesiumInitialized = true;
+             } else {
+-                // Resize viewer when unhidden
+-                if(window.viewer) window.viewer.resize();
++                // Resize viewer when unhidden and resume render loop
++                if (window.viewer) {
++                    window.viewer.useDefaultRenderLoop = true;
++                    window.viewer.resize();
++                }
+             }
+         } else if (activeTab === tabCalc) {
+             viewCalc.classList.remove('hidden');
+@@ -44,3 +44,4 @@
++            if (window.viewer) window.viewer.useDefaultRenderLoop = false;
+         }
+     }
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

@@ -1,0 +1,50 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -229,6 +229,44 @@
+             viewer.trackedEntity = undefined;
+             telemetryHud.classList.add('hidden');
+         });
++
++        // Interactive Temporal Scrubber
++        const temporalScrubber = document.getElementById('temporalScrubber');
++        const temporalTimeLabel = document.getElementById('temporalTimeLabel');
++        const baseTime = Cesium.JulianDate.now();
++
++        // Initial format
++        const formatScrubberLabel = (offsetHours, time) => {
++            const isNegative = offsetHours < 0;
++            const absHours = Math.abs(offsetHours);
++            const h = Math.floor(absHours).toString().padStart(2, '0');
++            const m = Math.floor((absHours * 60) % 60).toString().padStart(2, '0');
++            const s = Math.floor((absHours * 3600) % 60).toString().padStart(2, '0');
++            const prefix = isNegative ? 'T-MINUS' : 'T-PLUS';
++            
++            const jsDate = Cesium.JulianDate.toDate(time);
++            const utcStr = jsDate.toISOString().replace('T', ' ').substring(0, 19);
++            
++            return `${prefix} ${h}:${m}:${s} | UTC: ${utcStr}`;
++        };
++        temporalTimeLabel.textContent = formatScrubberLabel(0, baseTime);
++
++        temporalScrubber.addEventListener('input', (e) => {
++            const offsetHours = parseFloat(e.target.value);
++            
++            // Calculate new time
++            const newTime = new Cesium.JulianDate();
++            Cesium.JulianDate.addHours(baseTime, offsetHours, newTime);
++            
++            // Stop animation while dragging
++            viewer.clock.shouldAnimate = false;
++            
++            // Update viewer clock
++            viewer.clock.currentTime = newTime;
++            
++            // Update UI
++            temporalTimeLabel.textContent = formatScrubberLabel(offsetHours, newTime);
++        });
+     }
+ 
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

@@ -1,0 +1,28 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/backend/main.py. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -2,7 +2,7 @@
+ from fastapi.middleware.cors import CORSMiddleware
+ from pydantic import BaseModel
+ import math
+-from sgp4_calc import find_close_approaches
++from sgp4_calc import find_close_approaches, TLE_DATA
+ 
+ app = FastAPI(title="Space Debris Collision Avoidance API")
+ 
+@@ -18,6 +18,13 @@
+     area_m2: float
+     time_years: float
+ 
++@app.get("/api/tles")
++def get_tles():
++    """
++    Endpoint to return raw TLE data for 3D visualization.
++    """
++    return {"tles": TLE_DATA}
++
+ @app.get("/api/conjunctions")
+ def get_conjunctions():
+     """
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

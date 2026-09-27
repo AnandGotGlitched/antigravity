@@ -1,0 +1,15 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -91,6 +91,9 @@
+             <button id="tabLive" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-white text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] shadow-white/50">
+                 Live Tracking
+             </button>
++            <button id="tab3D" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-transparent text-gray-500 hover:text-gray-300">
++                3D Orbit Viewer
++            </button>
+             <button id="tabCalc" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-transparent text-gray-500 hover:text-gray-300">
+                 Risk Calculator
+             </button>
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

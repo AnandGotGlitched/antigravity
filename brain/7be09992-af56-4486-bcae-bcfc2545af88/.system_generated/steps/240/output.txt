@@ -1,0 +1,51 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -227,8 +227,44 @@
+         <!-- ============================== -->
+         <!-- VIEW 3D: ORBIT VIEWER          -->
+         <!-- ============================== -->
+-        <div id="view3D" class="hidden w-full h-[600px] animate-glide-up bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden">
++        <div id="view3D" class="hidden w-full h-[600px] animate-glide-up bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden relative">
+             <div id="cesiumContainer" class="w-full h-full"></div>
++            
++            <!-- SpaceX Floating Telemetry HUD -->
++            <div id="telemetryHud" class="hidden absolute top-6 right-6 z-40 w-80 bg-black/85 backdrop-blur-xl border border-[#00ffff]/30 rounded-xl p-5 shadow-2xl text-white font-mono flex flex-col">
++                <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-4">
++                    <div class="flex items-center space-x-2">
++                        <div class="w-2 h-2 rounded-full bg-green-400 animate-ping"></div>
++                        <span class="text-[#00ffff] font-bold tracking-widest text-sm">// TARGET LOCKED</span>
++                    </div>
++                    <button id="closeHudBtn" class="text-gray-400 hover:text-white transition">
++                        <i class="fa-solid fa-xmark text-lg"></i>
++                    </button>
++                </div>
++                
++                <div class="space-y-3 text-sm">
++                    <div class="flex justify-between border-b border-white/10 pb-1">
++                        <span class="text-gray-500">NAME</span>
++                        <span id="hudName" class="font-semibold text-right">--</span>
++                    </div>
++                    <div class="flex justify-between border-b border-white/10 pb-1">
++                        <span class="text-gray-500">CATALOG ID</span>
++                        <span id="hudId" class="font-semibold text-right">--</span>
++                    </div>
++                    <div class="flex justify-between border-b border-white/10 pb-1">
++                        <span class="text-gray-500">APPROX. ALTITUDE</span>
++                        <span id="hudAlt" class="font-semibold text-right">--</span>
++                    </div>
++                    <div class="flex justify-between border-b border-white/10 pb-1">
++                        <span class="text-gray-500">VELOCITY</span>
++                        <span id="hudVel" class="font-semibold text-right">--</span>
++                    </div>
++                    <div class="flex justify-between items-center pt-1">
++                        <span class="text-gray-500">CURRENT RISK</span>
++                        <span id="hudRisk" class="px-2 py-0.5 text-xs font-bold uppercase tracking-widest rounded-sm">--</span>
++                    </div>
++                </div>
++            </div>
+         </div>
+ 
+         <!-- ============================== -->
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

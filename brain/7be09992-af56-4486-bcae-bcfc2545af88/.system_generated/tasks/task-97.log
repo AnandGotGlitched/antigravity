@@ -1,0 +1,10 @@
+[{"id":"light-dismiss-a-dialog","description":"Create a modal dialog that can be closed via light dismiss (i.e. clicking or tapping outside of the dialog)","category":"ui-behaviors","featuresUsed":["<dialog closedby>"],"tokenCount":1092,"similarity":0.5184},
+{"id":"css","description":"Action-oriented guidelines for modern CSS architecture, layouts, and performance. Use this guide when authoring styles, managing design systems, or optimizing web rendering.","category":"css","tokenCount":7755,"similarity":0.424},
+{"id":"animate-to-from-top-layer","description":"Animate elements such as dialogs, popovers, and tooltips as they're entering/exiting the top layer.","category":"ui-behaviors","featuresUsed":["::backdrop","<dialog>","overlay","Popover","@starting-style","transition-behavior"],"tokenCount":1947,"similarity":0.4117},
+{"id":"soft-edge-content-fade","description":"Apply a transparency gradient to content edges to indicate further scrollable areas or to obscure payment-walled text.","category":"visual-design","featuresUsed":["Masks"],"tokenCount":677,"similarity":0.3863},
+{"id":"contrast-color","description":"Select a readable text color with sufficient contrast on a dynamic background color.","category":"visual-design","featuresUsed":["contrast-color()"],"tokenCount":2059,"similarity":0.3338}]
+npm notice
+npm notice New major version of npm available! 10.9.2 -> 12.1.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.1.0
+npm notice To update run: npm install -g npm@12.1.0
+npm notice

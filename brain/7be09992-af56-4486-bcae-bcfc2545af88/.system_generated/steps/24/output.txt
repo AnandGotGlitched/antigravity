@@ -1,0 +1,55 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/brain/7be09992-af56-4486-bcae-bcfc2545af88/task.md. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -1,26 +1,26 @@
+-- `[ ]` **Project Setup**
+-  - `[ ]` Create project directory structure (`backend/`, `frontend/`)
+-  - `[ ]` Initialize Python virtual environment
+-- `[ ]` **Backend Implementation**
+-  - `[ ]` Create `backend/requirements.txt` and install `fastapi`, `uvicorn`, `sgp4`
+-  - `[ ]` Implement `backend/sgp4_calc.py`
+-    - `[ ]` Setup hardcoded TLE dataset
+-    - `[ ]` Write function to propagate orbits and calculate positions over a time window
+-    - `[ ]` Write function to calculate distances and find close approaches
+-  - `[ ]` Implement `backend/main.py`
+-    - `[ ]` Setup FastAPI app
+-    - `[ ]` Create `GET /api/conjunctions` endpoint integrating the calculation logic
+-    - `[ ]` Configure CORS to allow frontend requests
+-- `[ ]` **Frontend Implementation**
+-  - `[ ]` Create `frontend/index.html`
+-    - `[ ]` Add Tailwind CSS via CDN
+-    - `[ ]` Design dashboard layout (header, main container)
+-    - `[ ]` Design risk ranking table/cards layout
+-  - `[ ]` Create `frontend/app.js`
+-    - `[ ]` Fetch data from backend API
+-    - `[ ]` Implement rendering logic to display data dynamically
+-    - `[ ]` Add basic visual risk indicators (e.g., colors based on distance)
+-- `[ ]` **Integration & Testing**
++- `[x]` **Project Setup**
++  - `[x]` Create project directory structure (`backend/`, `frontend/`)
++  - `[x]` Initialize Python virtual environment
++- `[x]` **Backend Implementation**
++  - `[x]` Create `backend/requirements.txt` and install `fastapi`, `uvicorn`, `sgp4`
++  - `[x]` Implement `backend/sgp4_calc.py`
++    - `[x]` Setup hardcoded TLE dataset
++    - `[x]` Write function to propagate orbits and calculate positions over a time window
++    - `[x]` Write function to calculate distances and find close approaches
++  - `[x]` Implement `backend/main.py`
++    - `[x]` Setup FastAPI app
++    - `[x]` Create `GET /api/conjunctions` endpoint integrating the calculation logic
++    - `[x]` Configure CORS to allow frontend requests
++- `[x]` **Frontend Implementation**
++  - `[x]` Create `frontend/index.html`
++    - `[x]` Add Tailwind CSS via CDN
++    - `[x]` Design dashboard layout (header, main container)
++    - `[x]` Design risk ranking table/cards layout
++  - `[x]` Create `frontend/app.js`
++    - `[x]` Fetch data from backend API
++    - `[x]` Implement rendering logic to display data dynamically
++    - `[x]` Add basic visual risk indicators (e.g., colors based on distance)
++- `[/]` **Integration & Testing**
+   - `[ ]` Run backend and verify API output
+   - `[ ]` Serve frontend and verify data is correctly ingested and displayed
+   - `[ ]` Polish UI and refine visual presentation
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

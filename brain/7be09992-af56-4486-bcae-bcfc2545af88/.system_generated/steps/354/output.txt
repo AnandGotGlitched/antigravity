@@ -1,0 +1,1 @@
+{"File":"/Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html","LineNumber":146,"LineContent":"            \u003cdiv id=\"camDrawer\" class=\"fixed top-0 right-0 h-full w-96 bg-black/90 backdrop-blur-xl border-l border-gray-800 z-50 transform translate-x-full transition-transform duration-500 flex flex-col p-6 overflow-y-auto\"\u003e"}

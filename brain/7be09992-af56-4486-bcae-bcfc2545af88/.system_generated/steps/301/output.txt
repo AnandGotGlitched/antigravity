@@ -1,0 +1,32 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -463,6 +463,10 @@
+             
+             // Add click listener to either open CAM Planner or fly to satellite in 3D view
+             row.addEventListener('click', () => {
++                // Always register this conjunction for the 3D viewer
++                if (window.setActiveTCA) window.setActiveTCA(item.closest_approach_time);
++                if (window.setActiveConjunctionPair) window.setActiveConjunctionPair(item.object1, item.object2);
++
+                 if (item.risk_level === 'CRITICAL') {
+                     openCamDrawer(item);
+                 } else {
+@@ -469,6 +469,6 @@
+                     switchTab(tab3D);
+                     
+-                    // Fly to object1
++                    // Track object1
+                     setTimeout(() => {
+                         const targetEntity = satelliteEntities[item.object1];
+                         if (window.viewer && targetEntity) {
+@@ -475,6 +475,6 @@
+                             window.viewer.trackedEntity = targetEntity;
+                         }
+-                    }, 500); // slight delay to ensure UI transition completes
++                    }, 500);
+                 }
+             });
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

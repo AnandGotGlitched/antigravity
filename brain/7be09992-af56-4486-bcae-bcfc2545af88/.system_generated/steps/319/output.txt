@@ -1,0 +1,13 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -574,6 +574,7 @@
+                 // Always register this conjunction for the 3D viewer
+                 if (window.setActiveTCA) window.setActiveTCA(item.closest_approach_time);
+                 if (window.setActiveConjunctionPair) window.setActiveConjunctionPair(item.object1, item.object2);
++                if (window.setActiveConjunctionData) window.setActiveConjunctionData(item);
+ 
+                 if (item.risk_level === 'CRITICAL') {
+                     openCamDrawer(item);
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

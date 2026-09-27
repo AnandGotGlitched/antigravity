@@ -1,0 +1,4 @@
+
+The command exited with code 0.
+Output:
+{"flux":0.00019999999999999998,"expected_impacts_lambda":0.01,"probability_of_impact_percent":0.9950166250831893}

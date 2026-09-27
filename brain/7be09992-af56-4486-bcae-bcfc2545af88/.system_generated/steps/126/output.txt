@@ -1,0 +1,18 @@
+
+Encountered error in step execution: context canceled
+There were sandbox errors that may or may not be related to the failure. If you think the failure is because of running in the sandbox, you can run the command again with `BypassSandbox` set to true to request explicit user permission.
+Output:
+INFO:     Started server process [3234]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:51274 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51283 - "POST /api/mission-risk HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51287 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51287 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51287 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51287 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51287 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51287 - "GET /api/conjunctions HTTP/1.1" 200 OK
+
+Terminal ID: 7d855ff8-ff06-400b-8e2a-26fcae30faad

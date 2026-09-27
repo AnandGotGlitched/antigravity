@@ -1,0 +1,45 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -390,7 +390,7 @@
+             temporalScrubber.value = Math.max(-12, Math.min(12, offsetHours));
+             temporalTimeLabel.textContent = formatScrubberLabel(offsetHours, tcaJD);
+ 
+-            // 2. Dual-Object Dynamic Framing
++            // 2. Dual-Object Dynamic Framing (Safe BoundingSphere)
+             const e1 = satelliteEntities[conj.object1];
+             const e2 = satelliteEntities[conj.object2];
+ 
+@@ -398,18 +398,20 @@
+                 const pos2 = e2.position.getValue(tcaJD);
+ 
+                 if (pos1 && pos2) {
+-                    // Calculate midpoint
+                     const midpoint = Cesium.Cartesian3.midpoint(pos1, pos2, new Cesium.Cartesian3());
+-                    
+-                    // Fly camera to frame both objects
++
++                    // Release any tracked entity to prevent camera collapse
+                     viewer.trackedEntity = undefined;
+-                    viewer.camera.flyTo({
+-                        destination: Cesium.Cartesian3.add(midpoint, new Cesium.Cartesian3(200000, -200000, 200000), new Cesium.Cartesian3()),
+-                        orientation: {
+-                            direction: Cesium.Cartesian3.normalize(Cesium.Cartesian3.subtract(midpoint, Cesium.Cartesian3.add(midpoint, new Cesium.Cartesian3(200000, -200000, 200000), new Cesium.Cartesian3()), new Cesium.Cartesian3()), new Cesium.Cartesian3()),
+-                            up: Cesium.Cartesian3.UNIT_Z
+-                        },
+-                        duration: 2.0
++
++                    // Fly to a safe bounding sphere — 150 km radius, 500 km viewing distance
++                    const encounterSphere = new Cesium.BoundingSphere(midpoint, 150000);
++                    viewer.camera.flyToBoundingSphere(encounterSphere, {
++                        duration: 1.8,
++                        offset: new Cesium.HeadingPitchRange(
++                            viewer.camera.heading,
++                            Cesium.Math.toRadians(-35),
++                            500000
++                        )
+                     });
+ 
+                     // 3. Draw proximity laser
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

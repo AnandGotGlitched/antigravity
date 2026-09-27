@@ -1,0 +1,124 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -60,13 +60,16 @@
+     let satelliteEntities = {};
+ 
+     async function initCesium() {
+-        // Initialize Cesium Viewer
++        // Initialize Cesium Viewer with Realistic Earth
+         window.viewer = new Cesium.Viewer('cesiumContainer', {
+-            imageryProvider: new Cesium.IonImageryProvider({ assetId: 2 }), // Default imagery
++            imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
++                url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'
++            }),
+             baseLayerPicker: false,
+             geocoder: false,
+-            homeButton: false,
+-            infoBox: false,
++            homeButton: true,
++            infoBox: true,
++            selectionIndicator: true,
+             navigationHelpButton: false,
+             sceneModePicker: false,
+             animation: false,
+@@ -73,5 +73,5 @@
+             fullscreenButton: false,
+-            requestRenderMode: true // saves CPU
++            requestRenderMode: false // Allow continuous rendering for smooth tracking
+         });
+ 
+         // Hide Cesium logo/credit for prototype cleanliness
+@@ -80,7 +80,6 @@
+             const response = await fetch(TLE_API_URL);
+             const data = await response.json();
+             
+-            // Current time for satellite.js calculation
+             const now = new Date();
+ 
+             data.tles.forEach(sat => {
+@@ -87,11 +87,31 @@
+-                const positionAndVelocity = satellite.propagate(satrec, now);
+-                const gmst = satellite.gstime(now);
+-
+-                if (positionAndVelocity.position) {
+-                    const positionGd = satellite.eciToGeodetic(positionAndVelocity.position, gmst);
++                
++                // Calculate 90-minute orbital trajectory
++                let positions = [];
++                for (let i = 0; i <= 90; i++) {
++                    const time = new Date(now.getTime() + i * 60000);
++                    const posVel = satellite.propagate(satrec, time);
++                    if (posVel.position) {
++                        const gmst = satellite.gstime(time);
++                        const posGd = satellite.eciToGeodetic(posVel.position, gmst);
++                        positions.push(Cesium.Cartesian3.fromDegrees(
++                            satellite.degreesLong(posGd.longitude),
++                            satellite.degreesLat(posGd.latitude),
++                            posGd.height * 1000
++                        ));
++                    }
++                }
++
++                const currentPosAndVel = satellite.propagate(satrec, now);
++
++                if (currentPosAndVel.position && positions.length > 0) {
++                    const gmst = satellite.gstime(now);
++                    const positionGd = satellite.eciToGeodetic(currentPosAndVel.position, gmst);
+                     const longitude = satellite.degreesLong(positionGd.longitude);
+                     const latitude = satellite.degreesLat(positionGd.latitude);
+                     const height = positionGd.height * 1000; // to meters
++                    
++                    const isDebris = sat.name.includes('DEB');
++                    const objType = isDebris ? 'Space Debris' : 'Active Satellite';
+ 
+                     const entity = viewer.entities.add({
+                         name: sat.name,
+@@ -101,6 +101,11 @@
+                             outlineColor: Cesium.Color.WHITE,
+                             outlineWidth: 2,
+                         },
++                        polyline: {
++                            positions: positions,
++                            width: 2,
++                            material: Cesium.Color.fromCssColorString('#00ffff').withAlpha(0.4)
++                        },
+                         label: {
+                             text: sat.name,
+                             font: '12pt Inter',
+@@ -108,7 +108,25 @@
+                             outlineWidth: 2,
+                             verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                             pixelOffset: new Cesium.Cartesian2(0, -9)
+-                        }
++                        },
++                        description: `
++                            <div style="padding: 10px; font-family: Inter, sans-serif;">
++                                <table style="width: 100%; text-align: left; border-collapse: collapse;">
++                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
++                                        <th style="padding: 5px 0;">Type</th>
++                                        <td style="padding: 5px 0; color: #aaa;">${objType}</td>
++                                    </tr>
++                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
++                                        <th style="padding: 5px 0;">Altitude</th>
++                                        <td style="padding: 5px 0; color: #aaa;">${(height/1000).toFixed(2)} km</td>
++                                    </tr>
++                                    <tr>
++                                        <th style="padding: 5px 0;">Risk Status</th>
++                                        <td style="padding: 5px 0; color: #aaa;">Active Tracking</td>
++                                    </tr>
++                                </table>
++                            </div>
++                        `
+                     });
+                     
+                     satelliteEntities[sat.name] = entity;
+@@ -115,6 +115,5 @@
+             });
+             
+-            viewer.scene.requestRender();
+         } catch (error) {
+             console.error("Error loading TLEs for Cesium:", error);
+         }
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

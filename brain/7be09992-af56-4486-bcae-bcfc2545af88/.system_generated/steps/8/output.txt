@@ -1,0 +1,12 @@
+
+The command exited with code 1.
+There were sandbox errors that may or may not be related to the failure. If you think the failure is because of running in the sandbox, you can run the command again with `BypassSandbox` set to true to request explicit user permission.
+Output:
+WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x10b190070>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known')': /simple/fastapi/
+WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x10b190550>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known')': /simple/fastapi/
+WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x10b190700>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known')': /simple/fastapi/
+WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x10b1908b0>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known')': /simple/fastapi/
+WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<pip._vendor.urllib3.connection.HTTPSConnection object at 0x10b190a60>: Failed to establish a new connection: [Errno 8] nodename nor servname provided, or not known')': /simple/fastapi/
+ERROR: Could not find a version that satisfies the requirement fastapi (from versions: none)
+ERROR: No matching distribution found for fastapi
+

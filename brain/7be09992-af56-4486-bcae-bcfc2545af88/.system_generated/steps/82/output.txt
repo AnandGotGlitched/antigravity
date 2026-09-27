@@ -1,0 +1,17 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -46,8 +46,9 @@
+ 
+             // Risk Level Styling
+             let riskBadgeClass = '';
+-            if (item.risk_level === 'High') {
+-                riskBadgeClass = 'bg-red-900/50 text-red-400 border border-red-500/50 px-2 py-1 rounded text-xs font-semibold';
++            if (item.risk_level === 'CRITICAL') {
++                riskBadgeClass = 'bg-red-600 text-white px-2 py-1 rounded text-xs font-bold animate-pulse shadow-[0_0_10px_rgba(220,38,38,0.8)]';
++                row.className += ' bg-red-900/20'; // faint red background for the whole row
+             } else if (item.risk_level === 'Medium') {
+                 riskBadgeClass = 'bg-yellow-900/50 text-yellow-400 border border-yellow-500/50 px-2 py-1 rounded text-xs font-semibold';
+             } else {
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

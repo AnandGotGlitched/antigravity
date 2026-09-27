@@ -1,0 +1,31 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -243,13 +243,20 @@
+             }
+ 
+             const date = new Date(item.closest_approach_time);
+-            const dateOpts = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' };
+-            const formattedDate = date.toLocaleString('en-US', dateOpts).toUpperCase() + ' UTC';
++            const dateOpts = { month: 'short', day: 'numeric', timeZone: 'UTC' };
++            const timeOpts = { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' };
++            const formattedDate = date.toLocaleString('en-US', dateOpts).toUpperCase();
++            const formattedTime = date.toLocaleString('en-US', timeOpts) + ' UTC';
+ 
+             row.innerHTML = `
+-                <td class="p-5 font-semibold tracking-wide">${item.object1}</td>
+-                <td class="p-5 font-semibold tracking-wide">${item.object2}</td>
+-                <td class="p-5 text-gray-300 font-light tracking-wider">${formattedDate}</td>
++                <td class="p-5 font-semibold tracking-wide">
++                    <div>${item.object1}</div>
++                    <div class="text-xs text-gray-400 font-light mt-1">${item.object2}</div>
++                </td>
++                <td class="p-5 text-gray-300 font-light tracking-wider">
++                    <div>${formattedDate}</div>
++                    <div class="text-xs text-gray-400 mt-1">${formattedTime}</div>
++                </td>
+                 <td class="p-5 font-mono text-right text-lg font-light tracking-wider">${item.min_distance_km.toFixed(2)}</td>
+                 <td class="p-5 text-center">
+                     <span class="${riskBadgeClass} inline-block">${item.risk_level}</span>
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

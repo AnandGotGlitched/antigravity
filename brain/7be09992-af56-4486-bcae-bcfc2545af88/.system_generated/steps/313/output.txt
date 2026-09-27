@@ -1,0 +1,52 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -266,6 +266,46 @@
+                 </div>
+             </div>
+ 
++            <!-- Conjunction Encounter Telemetry Overlay -->
++            <div id="encounterOverlay" class="hidden absolute top-6 left-6 z-40 w-80 bg-black/85 backdrop-blur-xl border border-red-500/40 rounded-xl p-5 shadow-2xl text-white font-mono flex flex-col">
++                <div class="flex justify-between items-center border-b border-red-500/30 pb-3 mb-4">
++                    <div class="flex items-center space-x-2">
++                        <div class="w-2 h-2 rounded-full bg-red-500 animate-ping"></div>
++                        <span class="text-red-400 font-bold tracking-widest text-sm">// CONJUNCTION ENCOUNTER (TCA)</span>
++                    </div>
++                    <button id="closeEncounterBtn" class="text-gray-400 hover:text-white transition">
++                        <i class="fa-solid fa-xmark text-lg"></i>
++                    </button>
++                </div>
++                
++                <div class="space-y-3 text-sm">
++                    <div class="flex justify-between border-b border-white/10 pb-1">
++                        <span class="text-gray-500">PRIMARY</span>
++                        <span id="encObj1" class="font-semibold text-right">--</span>
++                    </div>
++                    <div class="flex justify-between border-b border-white/10 pb-1">
++                        <span class="text-gray-500">SECONDARY</span>
++                        <span id="encObj2" class="font-semibold text-right">--</span>
++                    </div>
++                    <div class="flex justify-between border-b border-white/10 pb-1">
++                        <span class="text-gray-500">MISS DISTANCE</span>
++                        <span id="encMissDist" class="font-semibold text-red-400 text-right">--</span>
++                    </div>
++                    <div class="flex justify-between border-b border-white/10 pb-1">
++                        <span class="text-gray-500">COLLISION PROB (Pc)</span>
++                        <span id="encPc" class="font-semibold text-[#00ffff] text-right">--</span>
++                    </div>
++                    <div class="flex justify-between pb-1">
++                        <span class="text-gray-500">RELATIVE VELOCITY</span>
++                        <span id="encRelVel" class="font-semibold text-right">--</span>
++                    </div>
++                </div>
++
++                <button id="btnResumeSimulation" class="mt-4 w-full bg-[#00ffff]/20 hover:bg-[#00ffff]/30 border border-[#00ffff]/50 text-[#00ffff] py-2.5 uppercase tracking-widest text-xs font-semibold transition shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_20px_rgba(0,255,255,0.4)]">
++                    Resume Simulation ▶ 10x
++                </button>
++            </div>
++
+             <!-- Interactive Time Machine -->
+             <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-40 w-3/4 bg-black/70 backdrop-blur-xl rounded-2xl px-6 py-4 shadow-2xl border border-white/10 flex flex-col items-center space-y-3">
+                 <div id="temporalTimeLabel" class="text-sm font-mono text-[#00ffff] tracking-widest drop-shadow-[0_0_8px_rgba(0,255,255,0.8)] font-bold">T-PLUS 00:00:00 | UTC: --</div>
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

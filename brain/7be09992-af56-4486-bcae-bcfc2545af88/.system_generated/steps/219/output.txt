@@ -1,0 +1,82 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -303,16 +303,42 @@
+     const camNewDistVal = document.getElementById('camNewDistVal');
+     const camRiskBadge = document.getElementById('camRiskBadge');
+     const camDistBar = document.getElementById('camDistBar');
++    const camFuelCost = document.getElementById('camFuelCost');
++    const camNewPc = document.getElementById('camNewPc');
++    const btnPrograde = document.getElementById('btnPrograde');
++    const btnRetrograde = document.getElementById('btnRetrograde');
++    const btnAuthorize = document.getElementById('btnAuthorize');
+ 
+     let currentOriginalDist = 0;
++    let currentOriginalPcStr = "0.00e+00";
++    let isPrograde = true;
++
++    // Toggle Burn Direction
++    btnPrograde.addEventListener('click', () => {
++        isPrograde = true;
++        btnPrograde.className = 'flex-1 py-2 text-xs font-bold uppercase tracking-widest border border-white text-white bg-white/10 transition-colors';
++        btnRetrograde.className = 'flex-1 py-2 text-xs font-bold uppercase tracking-widest border border-gray-600 text-gray-400 hover:text-white hover:border-gray-400 transition-colors';
++        updateCamSimulation();
++    });
++
++    btnRetrograde.addEventListener('click', () => {
++        isPrograde = false;
++        btnRetrograde.className = 'flex-1 py-2 text-xs font-bold uppercase tracking-widest border border-white text-white bg-white/10 transition-colors';
++        btnPrograde.className = 'flex-1 py-2 text-xs font-bold uppercase tracking-widest border border-gray-600 text-gray-400 hover:text-white hover:border-gray-400 transition-colors';
++        updateCamSimulation();
++    });
+ 
+     function openCamDrawer(item) {
+-        // Populate static data
+         camObject1.textContent = item.object1;
+         camObject2.textContent = item.object2;
+         currentOriginalDist = item.min_distance_km;
+-        
+-        // Reset slider
++        currentOriginalPcStr = item.collision_probability || "1.12e-05"; // fallback for testing
++        
++        // Reset state
++        isPrograde = true;
++        btnPrograde.className = 'flex-1 py-2 text-xs font-bold uppercase tracking-widest border border-white text-white bg-white/10 transition-colors';
++        btnRetrograde.className = 'flex-1 py-2 text-xs font-bold uppercase tracking-widest border border-gray-600 text-gray-400 hover:text-white hover:border-gray-400 transition-colors';
++        
+         camDeltaVSlider.value = '0.0';
+         updateCamSimulation();
+ 
+@@ -329,9 +329,18 @@
+         const dv = parseFloat(camDeltaVSlider.value);
+         camDeltaVVal.textContent = dv.toFixed(1);
+ 
++        // Fuel Cost: Delta-V * 2.5 kg
++        const cost = dv * 2.5;
++        camFuelCost.textContent = `${cost.toFixed(1)} kg`;
++
+         // Simulation: 0.1 m/s adds 50 km distance
+         const newDist = currentOriginalDist + (dv * 500);
+         camNewDistVal.textContent = `${newDist.toFixed(1)} km`;
++        
++        // Update PC (Probability Drop mockup)
++        const originalPc = parseFloat(currentOriginalPcStr);
++        const newPc = originalPc * Math.exp(-dv * 3);
++        camNewPc.textContent = dv === 0 ? currentOriginalPcStr : newPc.toExponential(2);
+ 
+         // Update visuals based on safe threshold (> 50 km is SAFE)
+         if (newDist > 50) {
+@@ -347,6 +347,11 @@
+         const percent = Math.min((newDist / 1000) * 100, 100);
+         camDistBar.style.width = `${Math.max(percent, 5)}%`;
+     }
++    
++    btnAuthorize.addEventListener('click', () => {
++        alert('Maneuver Uploaded to Ground Station.');
++        camDrawer.classList.add('translate-x-full');
++    });
+ 
+     refreshBtn.addEventListener('click', fetchConjunctionData);
+     
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

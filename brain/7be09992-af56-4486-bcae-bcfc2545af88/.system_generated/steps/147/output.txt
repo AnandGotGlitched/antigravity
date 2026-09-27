@@ -1,0 +1,4 @@
+
+The command exited with code 0.
+Output:
+{"altitude_km":750.0,"area_m2":15.0,"time_years":5.0,"flux_per_m2_year":0.00035,"expected_impacts":0.026250000000000002,"probability_percentage":2.5908463718218533,"risk_rating":"MODERATE"}

@@ -1,0 +1,23 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -82,6 +82,17 @@
+         // Hide Cesium logo/credit for prototype cleanliness
+         viewer.cesiumWidget.creditContainer.style.display = 'none';
+ 
++        // Cinematic Scene Enhancements
++        viewer.scene.globe.enableLighting = true;
++        if (viewer.scene.skyAtmosphere) {
++            viewer.scene.skyAtmosphere.show = true;
++        }
++
++        // Auto-Rotate Idle Animation
++        viewer.clock.onTick.addEventListener(() => {
++            viewer.scene.camera.rotateRight(0.0005);
++        });
++
+         try {
+             const response = await fetch(TLE_API_URL);
+             const data = await response.json();
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

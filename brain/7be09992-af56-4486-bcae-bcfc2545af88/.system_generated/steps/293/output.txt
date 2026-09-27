@@ -1,0 +1,149 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -255,12 +255,15 @@
+             telemetryHud.classList.add('hidden');
+         });
+ 
+-        // Interactive Temporal Scrubber
++        // === TIME MACHINE ===
+         const temporalScrubber = document.getElementById('temporalScrubber');
+         const temporalTimeLabel = document.getElementById('temporalTimeLabel');
++        const btnPlayPause = document.getElementById('btnPlayPause');
++        const btnJumpTCA = document.getElementById('btnJumpTCA');
++        const proximityAlert = document.getElementById('proximityAlert');
++        const speedBtns = document.querySelectorAll('.speed-btn');
+         const baseTime = Cesium.JulianDate.now();
+ 
+-        // Initial format
+         const formatScrubberLabel = (offsetHours, time) => {
+             const isNegative = offsetHours < 0;
+             const absHours = Math.abs(offsetHours);
+@@ -267,10 +267,8 @@
+             const m = Math.floor((absHours * 60) % 60).toString().padStart(2, '0');
+             const s = Math.floor((absHours * 3600) % 60).toString().padStart(2, '0');
+             const prefix = isNegative ? 'T-MINUS' : 'T-PLUS';
+-            
+             const jsDate = Cesium.JulianDate.toDate(time);
+             const utcStr = jsDate.toISOString().replace('T', ' ').substring(0, 19);
+-            
+             return `${prefix} ${h}:${m}:${s} | UTC: ${utcStr}`;
+         };
+         temporalTimeLabel.textContent = formatScrubberLabel(0, baseTime);
+@@ -277,18 +277,106 @@
++        // Scrubber drag
+         temporalScrubber.addEventListener('input', (e) => {
+             const offsetHours = parseFloat(e.target.value);
+-            
+-            // Calculate new time
+             const newTime = new Cesium.JulianDate();
+             Cesium.JulianDate.addHours(baseTime, offsetHours, newTime);
+-            
+-            // Stop animation while dragging
+             viewer.clock.shouldAnimate = false;
+-            
+-            // Update viewer clock
+             viewer.clock.currentTime = newTime;
+-            
+-            // Update UI
+             temporalTimeLabel.textContent = formatScrubberLabel(offsetHours, newTime);
++            btnPlayPause.innerHTML = '► Play';
++        });
++
++        // Sync scrubber label when clock animates
++        viewer.clock.onTick.addEventListener(function updateTimeLabel() {
++            if (viewer.clock.shouldAnimate) {
++                const diff = Cesium.JulianDate.secondsDifference(viewer.clock.currentTime, baseTime);
++                const offsetHours = diff / 3600;
++                temporalScrubber.value = Math.max(-12, Math.min(12, offsetHours));
++                temporalTimeLabel.textContent = formatScrubberLabel(offsetHours, viewer.clock.currentTime);
++            }
++        });
++
++        // Play / Pause
++        btnPlayPause.addEventListener('click', () => {
++            viewer.clock.shouldAnimate = !viewer.clock.shouldAnimate;
++            btnPlayPause.innerHTML = viewer.clock.shouldAnimate ? '❚❚ Pause' : '► Play';
++        });
++
++        // Speed multiplier buttons
++        speedBtns.forEach(btn => {
++            btn.addEventListener('click', () => {
++                const speed = parseInt(btn.dataset.speed);
++                viewer.clock.multiplier = speed;
++                speedBtns.forEach(b => {
++                    b.className = 'speed-btn px-3 py-1.5 text-xs font-mono border border-white/10 text-gray-400 hover:text-white hover:border-white/30 transition rounded-sm';
++                });
++                btn.className = 'speed-btn px-3 py-1.5 text-xs font-mono border border-white/30 text-white bg-white/10 transition rounded-sm';
++            });
++        });
++
++        // Jump to TCA — reads the active conjunction's time
++        let activeTCA = null; // set by the Live Tracking table
++        window.setActiveTCA = (tcaISOStr) => { activeTCA = tcaISOStr; };
++
++        btnJumpTCA.addEventListener('click', () => {
++            if (activeTCA) {
++                const tcaJD = Cesium.JulianDate.fromIso8601(activeTCA);
++                viewer.clock.currentTime = tcaJD;
++                viewer.clock.shouldAnimate = false;
++                btnPlayPause.innerHTML = '► Play';
++                const diff = Cesium.JulianDate.secondsDifference(tcaJD, baseTime);
++                const offsetHours = diff / 3600;
++                temporalScrubber.value = Math.max(-12, Math.min(12, offsetHours));
++                temporalTimeLabel.textContent = formatScrubberLabel(offsetHours, tcaJD);
++            } else {
++                alert('No conjunction selected. Click a row in Live Tracking first.');
++            }
++        });
++
++        // === PROXIMITY ALERT SYSTEM ===
++        let proximityLine = null;
++        let activeConjunctionPair = null; // {obj1: name, obj2: name}
++        window.setActiveConjunctionPair = (obj1, obj2) => { activeConjunctionPair = { obj1, obj2 }; };
++
++        viewer.clock.onTick.addEventListener(() => {
++            if (!activeConjunctionPair) return;
++            
++            const e1 = satelliteEntities[activeConjunctionPair.obj1];
++            const e2 = satelliteEntities[activeConjunctionPair.obj2];
++            if (!e1 || !e2) return;
++
++            const pos1 = e1.position.getValue(viewer.clock.currentTime);
++            const pos2 = e2.position.getValue(viewer.clock.currentTime);
++            if (!pos1 || !pos2) return;
++
++            const distance = Cesium.Cartesian3.distance(pos1, pos2) / 1000; // to km
++
++            if (distance < 50) {
++                // Draw or update red proximity laser
++                if (!proximityLine) {
++                    proximityLine = viewer.entities.add({
++                        name: 'PROXIMITY_LINE',
++                        polyline: {
++                            positions: new Cesium.CallbackProperty(() => {
++                                const p1 = e1.position.getValue(viewer.clock.currentTime);
++                                const p2 = e2.position.getValue(viewer.clock.currentTime);
++                                return (p1 && p2) ? [p1, p2] : [];
++                            }, false),
++                            width: 4,
++                            material: new Cesium.PolylineGlowMaterialProperty({
++                                glowPower: 0.3,
++                                color: Cesium.Color.RED
++                            })
++                        }
++                    });
++                }
++                proximityAlert.classList.remove('hidden');
++            } else {
++                if (proximityLine) {
++                    viewer.entities.remove(proximityLine);
++                    proximityLine = null;
++                }
++                proximityAlert.classList.add('hidden');
++            }
+         });
+     }
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

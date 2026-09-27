@@ -1,0 +1,53 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -96,8 +96,9 @@
+         controller.minimumZoomDistance = 350000;
+         controller.maximumZoomDistance = 40000000;
+ 
+-        // Intelligent Auto-Rotation
++        // Intelligent Auto-Rotation + Joystick Camera Control
+         let lastInteractionTime = 0;
++        let joystickInput = { x: 0, y: 0, active: false };
+         
+         viewer.scene.canvas.addEventListener('pointerdown', () => lastInteractionTime = Date.now());
+         viewer.scene.canvas.addEventListener('wheel', () => lastInteractionTime = Date.now());
+@@ -104,5 +104,34 @@
+-        viewer.clock.onTick.addEventListener(() => {
+-            if (!viewer.trackedEntity && (Date.now() - lastInteractionTime > 4000)) {
++        // Initialize Virtual Joystick
++        const joystickManager = nipplejs.create({
++            zone: document.getElementById('joystick-zone'),
++            mode: 'static',
++            position: { left: '50%', top: '50%' },
++            color: '#06b6d4',
++            size: 100
++        });
++
++        joystickManager.on('move', (evt, data) => {
++            joystickInput.active = true;
++            joystickInput.x = data.vector.x;
++            joystickInput.y = data.vector.y;
++            lastInteractionTime = Date.now();
++        });
++
++        joystickManager.on('end', () => {
++            joystickInput.active = false;
++            joystickInput.x = 0;
++            joystickInput.y = 0;
++        });
++
++        viewer.clock.onTick.addEventListener(() => {
++            // Joystick camera control
++            if (joystickInput.active && !viewer.trackedEntity) {
++                const speed = 0.02;
++                viewer.scene.camera.rotateRight(joystickInput.x * speed);
++                viewer.scene.camera.rotateUp(joystickInput.y * speed);
++            }
++            // Idle auto-rotation
++            else if (!viewer.trackedEntity && (Date.now() - lastInteractionTime > 4000)) {
+                 viewer.scene.camera.rotateRight(0.0003);
+             }
+         });
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

@@ -1,0 +1,1 @@
+{"File":"/Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html","LineNumber":77,"LineContent":"\u003cbody class=\"bg-cinematic text-white antialiased min-h-screen flex flex-col overflow-x-hidden relative\"\u003e"}

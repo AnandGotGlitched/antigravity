@@ -1,0 +1,17 @@
+
+Encountered error in step execution: context canceled
+Output:
+INFO:     Started server process [2986]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:50989 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50995 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50995 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51079 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51083 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51241 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51242 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51265 - "GET /api/conjunctions HTTP/1.1" 200 OK
+
+Terminal ID: 9416774c-1a25-445d-8399-fe5b0a372f0e

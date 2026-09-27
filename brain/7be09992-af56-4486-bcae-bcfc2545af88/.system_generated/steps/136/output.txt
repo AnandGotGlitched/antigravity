@@ -1,0 +1,30 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/backend/sgp4_calc.py. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -89,13 +89,12 @@
+                      min_dist = 1.2
+ 
+                  # Probability of Collision Calculation
+-                 r_comb_km = 0.005 # 5 meters combined radius
++                 R_km = 0.01 # 10 meters combined radius
+                  sigma_km = 0.5    # 500 meters positional covariance
+                  
+-                 # Simplified 2D Gaussian probability integral
+-                 term1 = 1 - math.exp(- (r_comb_km**2) / (2 * sigma_km**2))
+-                 term2 = math.exp(- (min_dist**2) / (2 * sigma_km**2))
+-                 pc = term1 * term2
++                 # P_c approximation requested by user
++                 exponent = - (min_dist**2) / (2 * sigma_km**2)
++                 pc = 1 - math.exp(- ((R_km**2) / (2 * sigma_km**2)) * math.exp(exponent))
+ 
+                  conjunctions.append({
+                     "object1": sat1["name"],
+@@ -102,5 +102,5 @@
+                     "min_distance_km": round(min_dist, 2),
+-                    "probability_of_collision": pc,
++                    "collision_probability": f"{pc:.2e}",
+                     "closest_approach_time": closest_time.isoformat(),
+                     "risk_level": "CRITICAL" if min_dist < 10 else ("Medium" if min_dist < 50 else "Low")
+                  })
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

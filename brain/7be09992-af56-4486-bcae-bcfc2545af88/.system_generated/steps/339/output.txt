@@ -1,0 +1,25 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -167,7 +167,6 @@
+                     interpolationAlgorithm: Cesium.LagrangePolynomialApproximation
+                 });
+ 
+-                let trailPositions = [];
+                 const nowMs = Date.now();
+ 
+                 for (let minuteOffset = -720; minuteOffset <= 720; minuteOffset += 2) {
+@@ -183,11 +183,6 @@
+ 
+                         const julianTime = Cesium.JulianDate.fromDate(time);
+                         positionProperty.addSample(julianTime, cartesian);
+-
+-                        // Collect forward-only trail for the orbit line (next 90 min)
+-                        if (minuteOffset >= 0 && minuteOffset <= 90) {
+-                            trailPositions.push(cartesian);
+-                        }
+                     }
+                 }
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

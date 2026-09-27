@@ -1,0 +1,40 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -91,9 +91,32 @@
+             viewer.scene.skyAtmosphere.show = true;
+         }
+ 
+-        // Auto-Rotate Idle Animation
++        // Performance & Camera Controls
++        viewer.targetFrameRate = 120;
++        viewer.scene.screenSpaceCameraController.inertiaSpin = 0;
++        viewer.scene.screenSpaceCameraController.inertiaTranslate = 0;
++        viewer.scene.screenSpaceCameraController.inertiaZoom = 0;
++        viewer.scene.screenSpaceCameraController.minimumZoomDistance = 50000;
++
++        // Smart Auto-Rotate Idle Animation
++        let isInteracting = false;
++        let wheelTimeout = null;
++
++        viewer.scene.canvas.addEventListener('mousedown', () => isInteracting = true);
++        viewer.scene.canvas.addEventListener('pointerdown', () => isInteracting = true);
++        viewer.scene.canvas.addEventListener('wheel', () => {
++            isInteracting = true;
++            clearTimeout(wheelTimeout);
++            wheelTimeout = setTimeout(() => isInteracting = false, 500);
++        });
++
++        window.addEventListener('mouseup', () => isInteracting = false);
++        window.addEventListener('pointerup', () => isInteracting = false);
++
+         viewer.clock.onTick.addEventListener(() => {
+-            viewer.scene.camera.rotateRight(0.0005);
++            if (!isInteracting && !viewer.trackedEntity) {
++                viewer.scene.camera.rotateRight(0.0005);
++            }
+         });
+ 
+         try {
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

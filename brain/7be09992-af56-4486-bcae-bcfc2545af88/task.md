@@ -1,0 +1,26 @@
+- `[x]` **Project Setup**
+  - `[x]` Create project directory structure (`backend/`, `frontend/`)
+  - `[x]` Initialize Python virtual environment
+- `[x]` **Backend Implementation**
+  - `[x]` Create `backend/requirements.txt` and install `fastapi`, `uvicorn`, `sgp4`
+  - `[x]` Implement `backend/sgp4_calc.py`
+    - `[x]` Setup hardcoded TLE dataset
+    - `[x]` Write function to propagate orbits and calculate positions over a time window
+    - `[x]` Write function to calculate distances and find close approaches
+  - `[x]` Implement `backend/main.py`
+    - `[x]` Setup FastAPI app
+    - `[x]` Create `GET /api/conjunctions` endpoint integrating the calculation logic
+    - `[x]` Configure CORS to allow frontend requests
+- `[x]` **Frontend Implementation**
+  - `[x]` Create `frontend/index.html`
+    - `[x]` Add Tailwind CSS via CDN
+    - `[x]` Design dashboard layout (header, main container)
+    - `[x]` Design risk ranking table/cards layout
+  - `[x]` Create `frontend/app.js`
+    - `[x]` Fetch data from backend API
+    - `[x]` Implement rendering logic to display data dynamically
+    - `[x]` Add basic visual risk indicators (e.g., colors based on distance)
+- `[x]` **Integration & Testing**
+  - `[x]` Run backend and verify API output
+  - `[x]` Serve frontend and verify data is correctly ingested and displayed
+  - `[x]` Polish UI and refine visual presentation

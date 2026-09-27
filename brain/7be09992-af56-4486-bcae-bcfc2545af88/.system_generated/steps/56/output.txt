@@ -1,0 +1,16 @@
+
+The command exited with code 1.
+There were sandbox errors that may or may not be related to the failure. If you think the failure is because of running in the sandbox, you can run the command again with `BypassSandbox` set to true to request explicit user permission.
+Output:
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/inspect.py", line 3130, in signature
+    return Signature.from_callable(obj, follow_wrapped=follow_wrapped)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/inspect.py", line 2879, in from_callable
+    return _signature_from_callable(obj, sigcls=cls,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/inspect.py", line 2334, in _signature_from_callable
+    return _signature_from_builtin(sigcls, obj,
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/inspect.py", line 2145, in _signature_from_builtin
+    raise ValueError("no signature found for builtin {!r}".format(func))
+ValueError: no signature found for builtin <method 'sgp4' of 'sgp4.vallado_cpp.Satrec' objects>
+

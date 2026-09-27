@@ -1,0 +1,33 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -60,12 +60,9 @@
+     let satelliteEntities = {};
+ 
+     async function initCesium() {
+-        // Initialize Cesium Viewer with Realistic Earth
++        // Initialize Cesium Viewer without any default imagery provider to bypass Ion token
+         window.viewer = new Cesium.Viewer('cesiumContainer', {
+-            imageryProvider: new Cesium.UrlTemplateImageryProvider({
+-                url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+-                maximumLevel: 19
+-            }),
++            imageryProvider: false,
+             baseLayerPicker: false,
+             geocoder: false,
+             homeButton: true,
+@@ -78,6 +78,12 @@
+             requestRenderMode: false // Allow continuous rendering for smooth tracking
+         });
+ 
++        // Inject 4K Token-Free Esri Imagery
++        viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
++            url : 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
++            maximumLevel : 19
++        }));
++
+         // Hide Cesium logo/credit for prototype cleanliness
+         viewer.cesiumWidget.creditContainer.style.display = 'none';
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

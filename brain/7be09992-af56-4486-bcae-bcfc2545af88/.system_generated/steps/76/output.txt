@@ -1,0 +1,20 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/backend/sgp4_calc.py. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -11,7 +11,7 @@
+         "line2": "2 25544  51.6416 308.5303 0005272  28.9839 123.6934 15.50346399418653"
+     },
+     {
+-        "name": "SPACE DEBRIS 1",
++        "name": "COSMOS 2251 DEB",
+         "line1": "1 35948U 09050C   23272.52047877  .00000305  00000-0  56254-4 0  9999",
+         "line2": "2 35948  98.5414 300.9997 0001416  93.1818 266.9602 14.33157585735165"
+     },
+@@ -18,4 +18,4 @@
+-        "name": "SPACE DEBRIS 2",
++        "name": "FENGYUN 1C DEB",
+         "line1": "1 41473U 16025B   23272.48719946  .00000192  00000-0  21319-4 0  9994",
+         "line2": "2 41473  98.1568  68.2721 0001096  80.9576 279.1764 14.62939989396349"
+     },
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

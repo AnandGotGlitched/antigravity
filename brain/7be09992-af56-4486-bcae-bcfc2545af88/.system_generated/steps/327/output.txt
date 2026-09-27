@@ -1,0 +1,16 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -231,6 +231,10 @@
+         <div id="view3D" class="hidden w-full h-[600px] animate-glide-up bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden relative">
+             <div id="cesiumContainer" class="w-full h-full"></div>
+             
++            <!-- Virtual Joystick Zone -->
++            <div id="joystick-zone" class="absolute bottom-10 left-10 w-32 h-32 z-50"></div>
++
++
+             <!-- SpaceX Floating Telemetry HUD -->
+             <div id="telemetryHud" class="hidden absolute top-6 right-6 z-40 w-80 bg-black/85 backdrop-blur-xl border border-[#00ffff]/30 rounded-xl p-5 shadow-2xl text-white font-mono flex flex-col">
+                 <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-4">
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

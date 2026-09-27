@@ -1,0 +1,91 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -311,6 +311,8 @@
+     const btnPrograde = document.getElementById('btnPrograde');
+     const btnRetrograde = document.getElementById('btnRetrograde');
+     const btnAuthorize = document.getElementById('btnAuthorize');
++    const camTcaClock = document.getElementById('camTcaClock');
++    const camPropulsionSelect = document.getElementById('camPropulsionSelect');
+ 
+     let currentOriginalDist = 0;
+     let currentOriginalPcStr = "0.00e+00";
+@@ -317,3 +317,5 @@
++    let tcaInterval = null;
++    let targetTCA = null;
+ 
+     // Toggle Burn Direction
+     btnPrograde.addEventListener('click', () => {
+@@ -329,6 +329,28 @@
+         updateCamSimulation();
+     });
+ 
++    camPropulsionSelect.addEventListener('change', updateCamSimulation);
++
++    function startTcaClock(tcaTimeStr) {
++        if (tcaInterval) clearInterval(tcaInterval);
++        targetTCA = new Date(tcaTimeStr).getTime();
++        
++        tcaInterval = setInterval(() => {
++            const now = Date.now();
++            const diff = targetTCA - now;
++            if (diff <= 0) {
++                camTcaClock.textContent = "T-MINUS 00:00:00";
++                clearInterval(tcaInterval);
++                return;
++            }
++            
++            const hours = Math.floor(diff / (1000 * 60 * 60)).toString().padStart(2, '0');
++            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
++            const secs = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
++            camTcaClock.textContent = `T-MINUS ${hours}:${mins}:${secs}`;
++        }, 1000);
++    }
++
+     function openCamDrawer(item) {
+         camObject1.textContent = item.object1;
+         camObject2.textContent = item.object2;
+@@ -335,5 +335,7 @@
+         currentOriginalPcStr = item.collision_probability || "1.12e-05"; // fallback for testing
+         
++        startTcaClock(item.closest_approach_time);
++        
+         // Reset state
+         isPrograde = true;
+         btnPrograde.className = 'flex-1 py-2 text-xs font-bold uppercase tracking-widest border border-white text-white bg-white/10 transition-colors';
+@@ -340,3 +340,4 @@
++        camPropulsionSelect.value = 'chemical';
+         
+         camDeltaVSlider.value = '0.0';
+         updateCamSimulation();
+@@ -346,6 +346,7 @@
+ 
+     closeCamDrawerBtn.addEventListener('click', () => {
+         camDrawer.classList.add('translate-x-full');
++        if (tcaInterval) clearInterval(tcaInterval);
+     });
+ 
+     camDeltaVSlider.addEventListener('input', updateCamSimulation);
+@@ -353,8 +353,10 @@
+         const dv = parseFloat(camDeltaVSlider.value);
+         camDeltaVVal.textContent = dv.toFixed(1);
+ 
+-        // Fuel Cost: Delta-V * 2.5 kg
+-        const cost = dv * 2.5;
++        // Fuel Cost: Chemical = dv * 3.5, Electric = dv * 0.2
++        const isElectric = camPropulsionSelect.value === 'electric';
++        const costMultiplier = isElectric ? 0.2 : 3.5;
++        const cost = dv * costMultiplier;
+         camFuelCost.textContent = `${cost.toFixed(1)} kg`;
+ 
+         // Simulation: 0.1 m/s adds 50 km distance
+@@ -384,6 +384,7 @@
+     btnAuthorize.addEventListener('click', () => {
+         alert('Maneuver Uploaded to Ground Station.');
+         camDrawer.classList.add('translate-x-full');
++        if (tcaInterval) clearInterval(tcaInterval);
+     });
+ 
+     refreshBtn.addEventListener('click', fetchConjunctionData);
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

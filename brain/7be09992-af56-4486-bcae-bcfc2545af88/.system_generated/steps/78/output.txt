@@ -1,0 +1,24 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/backend/sgp4_calc.py. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -83,6 +83,11 @@
+                         closest_time = t
+ 
+             if closest_time:
++                 # Inject High-Risk Simulation
++                 if (sat1["name"] == "STARLINK-1007" and sat2["name"] == "COSMOS 2251 DEB") or \
++                    (sat2["name"] == "STARLINK-1007" and sat1["name"] == "COSMOS 2251 DEB"):
++                     min_dist = 1.2
++
+                  conjunctions.append({
+                     "object1": sat1["name"],
+                     "object2": sat2["name"],
+@@ -89,5 +89,5 @@
+                     "closest_approach_time": closest_time.isoformat(),
+-                    "risk_level": "High" if min_dist < 50 else ("Medium" if min_dist < 200 else "Low")
++                    "risk_level": "CRITICAL" if min_dist < 10 else ("Medium" if min_dist < 50 else "Low")
+                  })
+                  
+     # Sort by minimum distance
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

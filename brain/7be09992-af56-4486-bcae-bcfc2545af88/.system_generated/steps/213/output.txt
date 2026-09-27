@@ -1,0 +1,17 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -127,9 +127,8 @@
+                         <table class="w-full text-left border-collapse whitespace-nowrap cursor-pointer">
+                             <thead>
+                                 <tr class="bg-white/5 border-b border-white/10 text-gray-300 text-xs uppercase tracking-widest">
+-                                    <th class="p-5 font-semibold">Primary Object</th>
+-                                    <th class="p-5 font-semibold">Secondary Object</th>
+-                                    <th class="p-5 font-semibold">Time of Approach (UTC)</th>
++                                    <th class="p-5 font-semibold">Objects Involved</th>
++                                    <th class="p-5 font-semibold">Approach (UTC)</th>
+                                     <th class="p-5 font-semibold text-right">Distance (km)</th>
+                                     <th class="p-5 font-semibold text-center">Status</th>
+                                 </tr>
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

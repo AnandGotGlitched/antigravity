@@ -1,0 +1,27 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -207,11 +207,16 @@
+                         width: 24,
+                         height: 24,
+                     },
+-                    polyline: {
+-                        positions: trailPositions,
+-                        width: 2,
+-                        material: Cesium.Color.fromCssColorString(reticleColor).withAlpha(0.3)
+-                    },
++                    path: new Cesium.PathGraphics({
++                        leadTime: 3600,
++                        trailTime: 3600,
++                        width: 1.5,
++                        resolution: 120,
++                        material: new Cesium.PolylineGlowMaterialProperty({
++                            glowPower: 0.15,
++                            color: isDebris ? Cesium.Color.RED.withAlpha(0.7) : Cesium.Color.CYAN.withAlpha(0.7)
++                        })
++                    }),
+                     label: {
+                         text: sat.name,
+                         font: '12pt Inter',
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

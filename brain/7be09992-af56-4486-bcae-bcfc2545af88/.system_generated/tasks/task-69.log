@@ -1,0 +1,9 @@
+INFO:     Started server process [2970]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:50949 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50953 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50961 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50963 - "GET /api/conjunctions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50985 - "GET /api/conjunctions HTTP/1.1" 200 OK

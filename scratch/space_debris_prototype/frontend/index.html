@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbital Guard // Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/satellite.js/5.0.0/satellite.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.1/nipplejs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+        }
+        .bg-cinematic {
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?q=80&w=2000');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        @keyframes glideUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-glide-up {
+            animation: glideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        /* Custom range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #fff;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-cinematic text-white antialiased min-h-screen flex flex-col overflow-x-hidden relative">
+    
+    <!-- Global Floating Export Button -->
+    <button id="global-export-btn" class="fixed top-4 right-4 z-[9999] bg-cyan-900/80 hover:bg-cyan-700 backdrop-blur border border-cyan-400 text-cyan-50 px-4 py-2 rounded-md font-mono text-sm shadow-[0_0_15px_rgba(6,182,212,0.5)] transition-all cursor-pointer flex items-center gap-2">
+        <span>⤓ EXPORT AUDIT REPORT</span>
+    </button>
+
+
+    <!-- Minimalist Header -->
+    <header class="pt-8 px-6 md:px-8 w-full z-10 flex flex-col items-center">
+        <div class="w-full max-w-6xl flex items-center justify-between">
+            <h1 class="text-xl md:text-3xl font-bold tracking-[0.2em] uppercase text-white shadow-sm">
+                Orbital Guard <span class="text-gray-400 font-light">// Command Center</span>
+            </h1>
+            <!-- Action Button for Live Tracking only (hidden in calculator mode) -->
+            <div class="flex items-center space-x-3">
+                <button id="exportReportBtn" class="border border-cyan-500/40 hover:bg-cyan-500/20 text-cyan-400 font-mono text-xs px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
+                    ⤓ Export Audit Report
+                </button>
+                <button id="refreshBtn" class="border border-white/40 hover:bg-white/10 hover:border-white text-white px-5 py-2 transition duration-300 uppercase tracking-widest text-xs font-semibold rounded-none backdrop-blur-sm">
+                    Refresh Live Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <nav class="w-full max-w-6xl mt-8 flex space-x-12 border-b border-white/10">
+            <button id="tabLive" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-white text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] shadow-white/50">
+                Live Tracking
+            </button>
+            <button id="tab3D" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-transparent text-gray-500 hover:text-gray-300">
+                3D Orbit Viewer
+            </button>
+            <button id="tabCalc" class="pb-3 text-sm font-semibold tracking-widest uppercase transition duration-300 border-b-2 border-transparent text-gray-500 hover:text-gray-300">
+                Risk Calculator
+            </button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8 flex flex-col items-center relative z-10 w-full max-w-6xl">
+        
+        <!-- ============================== -->
+        <!-- VIEW 1: LIVE TRACKING TABLE    -->
+        <!-- ============================== -->
+        <div id="viewLive" class="w-full animate-glide-up">
+            <!-- Loader -->
+            <div id="loader" class="flex justify-center items-center py-20 w-full">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="hidden w-full bg-red-900/50 backdrop-blur-md border border-red-500/50 text-red-200 p-6 mb-6">
+                <div class="flex items-center space-x-3 text-lg">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span id="errorMessage">Failed to load data from the server.</span>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div id="dashboardContent" class="hidden w-full">
+                <div class="bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap cursor-pointer">
+                            <thead>
+                                <tr class="bg-white/5 border-b border-white/10 text-gray-300 text-xs uppercase tracking-widest">
+                                    <th class="p-5 font-semibold">Objects Involved</th>
+                                    <th class="p-5 font-semibold">Approach (UTC)</th>
+                                    <th class="p-5 font-semibold text-right">Distance (km)</th>
+                                    <th class="p-5 font-semibold text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="conjunctionTableBody" class="divide-y divide-white/5 text-sm">
+                                <!-- Rows injected here via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAM Drawer (Hidden by default, slides in from right) -->
+            <div id="camDrawer" class="fixed top-0 right-0 h-full w-96 bg-black/90 backdrop-blur-xl border-l border-gray-800 z-50 transform translate-x-full transition-transform duration-500 flex flex-col p-6 overflow-y-auto">
+                <div class="flex justify-between items-center border-b border-gray-700 pb-4 mb-6">
+                    <h2 class="text-lg uppercase tracking-widest font-semibold text-white">CAM Planner</h2>
+                    <button id="closeCamDrawer" class="text-gray-400 hover:text-white transition">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-6 flex-grow">
+                    <!-- TCA Countdown Clock -->
+                    <div class="bg-red-900/30 border border-red-500/50 p-4 rounded-sm text-center">
+                        <p class="text-xs uppercase tracking-widest text-red-400 mb-1">Time to Closest Approach (TCA)</p>
+                        <p id="camTcaClock" class="text-3xl font-mono text-red-500 font-bold tracking-widest drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">T-MINUS --:--:--</p>
+                    </div>
+
+                    <div>
+                        <p class="text-xs uppercase tracking-widest text-gray-500">Primary Object</p>
+                        <p id="camObject1" class="text-lg font-bold text-white tracking-wide">--</p>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-widest text-gray-500">Secondary Object</p>
+                        <p id="camObject2" class="text-lg font-bold text-white tracking-wide">--</p>
+                    </div>
+
+                    <!-- Propulsion System Selector -->
+                    <div class="pt-4 border-t border-gray-800">
+                        <p class="text-xs uppercase tracking-wider text-gray-500 mb-3">Propulsion Type</p>
+                        <select id="camPropulsionSelect" class="w-full bg-white/5 border border-gray-600 text-white p-2 text-sm focus:outline-none focus:border-[#00ffff] transition-colors">
+                            <option value="chemical">Chemical (Hydrazine)</option>
+                            <option value="electric">Electric (Ion)</option>
+                        </select>
+                    </div>
+
+                    <!-- Burn Direction -->
+                    <div class="pt-4 border-t border-gray-800">
+                        <p class="text-xs uppercase tracking-wider text-gray-500 mb-3">Burn Direction</p>
+                        <div class="flex space-x-2">
+                            <button id="btnPrograde" class="flex-1 py-2 text-xs font-bold uppercase tracking-widest border border-white text-white bg-white/10 transition-colors">Prograde</button>
+                            <button id="btnRetrograde" class="flex-1 py-2 text-xs font-bold uppercase tracking-widest border border-gray-600 text-gray-400 hover:text-white hover:border-gray-400 transition-colors">Retrograde</button>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-800">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-xs uppercase tracking-wider text-gray-500">In-Track Delta-v (m/s)</label>
+                            <span id="camDeltaVVal" class="text-lg font-mono text-[#00ffff] drop-shadow-[0_0_8px_rgba(0,255,255,0.8)]">0.0</span>
+                        </div>
+                        <input type="range" id="camDeltaVSlider" min="0.0" max="2.0" step="0.1" value="0.0" class="w-full">
+                    </div>
+                    
+                    <div class="pt-4 border-t border-gray-800 space-y-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-widest text-gray-500 mb-1">Estimated Propellant Cost</p>
+                            <p id="camFuelCost" class="text-lg font-mono text-gray-300">0.0 kg</p>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-widest text-gray-500 mb-1">New Collision Prob (Pc)</p>
+                            <p id="camNewPc" class="text-xl font-mono text-[#00ffff]">--</p>
+                        </div>
+
+                        <div>
+                            <p class="text-xs uppercase tracking-widest text-gray-500 mb-2">Predicted Miss Distance</p>
+                            <div class="flex justify-between items-end mb-2">
+                                <span id="camNewDistVal" class="text-2xl font-mono text-white">-- km</span>
+                                <span id="camRiskBadge" class="px-2 py-0.5 text-xs font-bold uppercase tracking-widest rounded-sm border transition-colors duration-300">CRITICAL</span>
+                            </div>
+                            <!-- Progress Bar -->
+                            <div class="w-full h-3 bg-white/10 rounded-sm overflow-hidden">
+                                <div id="camDistBar" class="h-full w-0 bg-red-500 transition-all duration-300"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 space-y-3">
+                    <button id="btnAuthorize" class="w-full bg-[#00ffff]/20 hover:bg-[#00ffff]/30 border border-[#00ffff]/50 text-[#00ffff] py-3 uppercase tracking-widest text-sm font-semibold transition shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_20px_rgba(0,255,255,0.4)]">
+                        Authorize Maneuver
+                    </button>
+                    <button id="exportCamReportBtn" class="w-full border border-cyan-500/40 hover:bg-cyan-500/20 text-cyan-400 font-mono text-xs px-3 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5">
+                        ⤓ Export Audit Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- VIEW 3D: ORBIT VIEWER          -->
+        <!-- ============================== -->
+        <div id="view3D" class="hidden w-full h-[600px] animate-glide-up bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl overflow-hidden relative">
+            <div id="cesiumContainer" class="w-full h-full"></div>
+            
+            <!-- Virtual Joystick Zone -->
+            <div id="joystick-zone" class="absolute bottom-10 left-10 w-32 h-32 z-50"></div>
+
+
+            <!-- SpaceX Floating Telemetry HUD -->
+            <div id="telemetryHud" class="hidden absolute top-6 right-6 z-40 w-80 bg-black/85 backdrop-blur-xl border border-[#00ffff]/30 rounded-xl p-5 shadow-2xl text-white font-mono flex flex-col">
+                <div class="flex justify-between items-center border-b border-white/20 pb-3 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 rounded-full bg-green-400 animate-ping"></div>
+                        <span class="text-[#00ffff] font-bold tracking-widest text-sm">// TARGET LOCKED</span>
+                    </div>
+                    <button id="closeHudBtn" class="text-gray-400 hover:text-white transition">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">NAME</span>
+                        <span id="hudName" class="font-semibold text-right">--</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">CATALOG ID</span>
+                        <span id="hudId" class="font-semibold text-right">--</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">APPROX. ALTITUDE</span>
+                        <span id="hudAlt" class="font-semibold text-right">--</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">VELOCITY</span>
+                        <span id="hudVel" class="font-semibold text-right">--</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-1">
+                        <span class="text-gray-500">CURRENT RISK</span>
+                        <span id="hudRisk" class="px-2 py-0.5 text-xs font-bold uppercase tracking-widest rounded-sm">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conjunction Encounter Telemetry Overlay -->
+            <div id="encounterOverlay" class="hidden absolute top-6 left-6 z-40 w-80 bg-black/85 backdrop-blur-xl border border-red-500/40 rounded-xl p-5 shadow-2xl text-white font-mono flex flex-col">
+                <div class="flex justify-between items-center border-b border-red-500/30 pb-3 mb-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 rounded-full bg-red-500 animate-ping"></div>
+                        <span class="text-red-400 font-bold tracking-widest text-sm">// CONJUNCTION ENCOUNTER (TCA)</span>
+                    </div>
+                    <button id="closeEncounterBtn" class="text-gray-400 hover:text-white transition">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">PRIMARY</span>
+                        <span id="encObj1" class="font-semibold text-right">--</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">SECONDARY</span>
+                        <span id="encObj2" class="font-semibold text-right">--</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">MISS DISTANCE</span>
+                        <span id="encMissDist" class="font-semibold text-red-400 text-right">--</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/10 pb-1">
+                        <span class="text-gray-500">COLLISION PROB (Pc)</span>
+                        <span id="encPc" class="font-semibold text-[#00ffff] text-right">--</span>
+                    </div>
+                    <div class="flex justify-between pb-1">
+                        <span class="text-gray-500">RELATIVE VELOCITY</span>
+                        <span id="encRelVel" class="font-semibold text-right">--</span>
+                    </div>
+                </div>
+
+                <button id="btnResumeSimulation" class="mt-4 w-full bg-[#00ffff]/20 hover:bg-[#00ffff]/30 border border-[#00ffff]/50 text-[#00ffff] py-2.5 uppercase tracking-widest text-xs font-semibold transition shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_20px_rgba(0,255,255,0.4)]">
+                    Resume Simulation ▶ 10x
+                </button>
+            </div>
+
+            <!-- Interactive Time Machine -->
+            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-40 w-3/4 bg-black/70 backdrop-blur-xl rounded-2xl px-6 py-4 shadow-2xl border border-white/10 flex flex-col items-center space-y-3">
+                <div id="temporalTimeLabel" class="text-sm font-mono text-[#00ffff] tracking-widest drop-shadow-[0_0_8px_rgba(0,255,255,0.8)] font-bold">T-PLUS 00:00:00 | UTC: --</div>
+                <input type="range" id="temporalScrubber" min="-12" max="12" step="0.1" value="0" class="w-full cursor-pointer">
+                
+                <!-- Playback Controls -->
+                <div class="flex items-center space-x-3 w-full justify-center">
+                    <button id="btnPlayPause" class="px-4 py-1.5 text-xs font-bold uppercase tracking-widest border border-[#00ffff]/50 text-[#00ffff] bg-[#00ffff]/10 hover:bg-[#00ffff]/20 transition rounded-sm">
+                        ► Play
+                    </button>
+                    
+                    <div class="flex space-x-1">
+                        <button data-speed="1" class="speed-btn px-3 py-1.5 text-xs font-mono border border-white/30 text-white bg-white/10 transition rounded-sm">1x</button>
+                        <button data-speed="10" class="speed-btn px-3 py-1.5 text-xs font-mono border border-white/10 text-gray-400 hover:text-white hover:border-white/30 transition rounded-sm">10x</button>
+                        <button data-speed="60" class="speed-btn px-3 py-1.5 text-xs font-mono border border-white/10 text-gray-400 hover:text-white hover:border-white/30 transition rounded-sm">60x</button>
+                        <button data-speed="100" class="speed-btn px-3 py-1.5 text-xs font-mono border border-white/10 text-gray-400 hover:text-white hover:border-white/30 transition rounded-sm">100x</button>
+                    </div>
+
+                    <button id="btnJumpTCA" class="px-4 py-1.5 text-xs font-bold uppercase tracking-widest border border-red-500/50 text-red-400 bg-red-500/10 hover:bg-red-500/20 transition rounded-sm animate-pulse">
+                        ⚠ Jump to TCA
+                    </button>
+                </div>
+
+                <!-- Proximity Alert Banner (hidden by default) -->
+                <div id="proximityAlert" class="hidden w-full bg-red-900/50 border border-red-500 rounded-lg py-2 text-center text-red-300 font-bold tracking-widest text-sm animate-pulse">
+                    ⚠ PROXIMITY ALERT — COLLISION IMMINENT ⚠
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================== -->
+        <!-- VIEW 2: RISK CALCULATOR        -->
+        <!-- ============================== -->
+        <div id="viewCalc" class="hidden w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 animate-glide-up mt-4 mx-auto">
+            
+            <!-- Left Panel: Inputs -->
+            <div class="bg-black/40 backdrop-blur-md border border-white/10 p-8 shadow-2xl flex flex-col">
+                <h2 class="text-lg uppercase tracking-widest font-semibold mb-6 text-gray-300 border-b border-white/10 pb-4">Mission Parameters</h2>
+                
+                <div class="space-y-8 flex-grow">
+                    <!-- Target Altitude -->
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <label class="text-sm uppercase tracking-wider font-light text-gray-400">Target Altitude</label>
+                            <span id="valAltitude" class="text-sm font-mono text-white">600 km</span>
+                        </div>
+                        <input type="range" id="inputAltitude" min="200" max="2000" step="50" value="600" class="w-full">
+                    </div>
+
+                    <!-- Cross-Sectional Area -->
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <label class="text-sm uppercase tracking-wider font-light text-gray-400">Spacecraft Area</label>
+                            <span id="valArea" class="text-sm font-mono text-white">10 m²</span>
+                        </div>
+                        <input type="range" id="inputArea" min="1" max="100" step="1" value="10" class="w-full">
+                    </div>
+
+                    <!-- Time in Orbit -->
+                    <div>
+                        <div class="flex justify-between mb-2">
+                            <label class="text-sm uppercase tracking-wider font-light text-gray-400">Time in Orbit</label>
+                            <span id="valTime" class="text-sm font-mono text-white">5 years</span>
+                        </div>
+                        <input type="range" id="inputTime" min="1" max="25" step="1" value="5" class="w-full">
+                    </div>
+                </div>
+
+                <button id="calculateBtn" class="mt-10 w-full bg-white/10 hover:bg-white/20 border border-white/40 hover:border-white text-white py-4 transition duration-300 uppercase tracking-widest text-sm font-semibold backdrop-blur-sm shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                    Calculate Risk
+                </button>
+            </div>
+
+            <!-- Right Panel: Results -->
+            <div class="bg-black/40 backdrop-blur-md border border-white/10 p-8 shadow-2xl flex flex-col justify-between">
+                <div>
+                    <h2 class="text-lg uppercase tracking-widest font-semibold mb-6 text-gray-300 border-b border-white/10 pb-4">Risk Assessment</h2>
+                    
+                    <div class="mt-8 flex flex-col items-center">
+                        <span class="text-xs uppercase tracking-widest text-gray-400 mb-2">Probability of Impact</span>
+                        <div id="probValue" class="text-6xl font-light tracking-wider font-mono text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-500">
+                            --%
+                        </div>
+                    </div>
+
+                    <div class="mt-10">
+                        <div class="flex justify-between text-xs uppercase tracking-widest text-gray-400 mb-2">
+                            <span>Risk Meter</span>
+                            <span id="riskBadge" class="px-2 py-0.5 border border-gray-500/50 text-gray-400 rounded-sm font-semibold transition-all duration-500">STANDBY</span>
+                        </div>
+                        <!-- Progress Bar Background -->
+                        <div class="w-full h-2 bg-white/10 overflow-hidden mt-2">
+                            <!-- Progress Bar Fill -->
+                            <div id="riskMeterFill" class="h-full w-0 bg-gray-500 transition-all duration-1000 ease-out shadow-[0_0_10px_currentColor]"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-xs text-gray-500 tracking-wider font-light text-center leading-relaxed">
+                    Calculation based on empirical orbital density models, cross-sectional collision probability integration, and mission duration.
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

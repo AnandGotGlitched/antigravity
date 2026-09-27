@@ -1,0 +1,20 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -223,10 +223,13 @@
+                     </div>
+                 </div>
+                 
+-                <div class="mt-6">
++                <div class="mt-6 space-y-3">
+                     <button id="btnAuthorize" class="w-full bg-[#00ffff]/20 hover:bg-[#00ffff]/30 border border-[#00ffff]/50 text-[#00ffff] py-3 uppercase tracking-widest text-sm font-semibold transition shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_20px_rgba(0,255,255,0.4)]">
+                         Authorize Maneuver
+                     </button>
++                    <button id="exportCamReportBtn" class="w-full border border-cyan-500/40 hover:bg-cyan-500/20 text-cyan-400 font-mono text-xs px-3 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5">
++                        ⤓ Export Audit Report
++                    </button>
+                 </div>
+             </div>
+         </div>
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

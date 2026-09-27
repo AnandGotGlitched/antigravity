@@ -1,0 +1,90 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -173,24 +173,12 @@
+                             verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                             pixelOffset: new Cesium.Cartesian2(0, -9)
+                         },
+-                        description: `
+-                            <div style="padding: 10px; font-family: Inter, sans-serif;">
+-                                <table style="width: 100%; text-align: left; border-collapse: collapse;">
+-                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+-                                        <th style="padding: 5px 0;">Type</th>
+-                                        <td style="padding: 5px 0; color: #aaa;">${objType}</td>
+-                                    </tr>
+-                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+-                                        <th style="padding: 5px 0;">Altitude</th>
+-                                        <td style="padding: 5px 0; color: #aaa;">${(height/1000).toFixed(2)} km</td>
+-                                    </tr>
+-                                    <tr>
+-                                        <th style="padding: 5px 0;">Risk Status</th>
+-                                        <td style="padding: 5px 0; color: #aaa;">Active Tracking</td>
+-                                    </tr>
+-                                </table>
+-                            </div>
+-                        `
++                        properties: {
++                            catalogId: sat.name.split(' ').pop() || "UNKNOWN",
++                            altitude: (height/1000).toFixed(0),
++                            velocity: (currentPosAndVel.velocity ? Math.sqrt(Math.pow(currentPosAndVel.velocity.x, 2) + Math.pow(currentPosAndVel.velocity.y, 2) + Math.pow(currentPosAndVel.velocity.z, 2)).toFixed(2) : "7.62"),
++                            riskLevel: isDebris ? "CRITICAL" : "NOMINAL"
++                        }
+                     });
+                     
+                     satelliteEntities[sat.name] = entity;
+@@ -199,6 +199,53 @@
+         } catch (error) {
+             console.error("Error loading TLEs for Cesium:", error);
+         }
++
++        // Click-to-Lock & Real-Time Tracking HUD
++        const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
++        const telemetryHud = document.getElementById('telemetryHud');
++        const hudName = document.getElementById('hudName');
++        const hudId = document.getElementById('hudId');
++        const hudAlt = document.getElementById('hudAlt');
++        const hudVel = document.getElementById('hudVel');
++        const hudRisk = document.getElementById('hudRisk');
++        const closeHudBtn = document.getElementById('closeHudBtn');
++
++        handler.setInputAction(function (movement) {
++            const pickedObject = viewer.scene.pick(movement.position);
++            if (Cesium.defined(pickedObject) && pickedObject.id) {
++                const pickedEntity = pickedObject.id;
++                
++                // Glide camera to object
++                viewer.flyTo(pickedEntity, { 
++                    duration: 1.5, 
++                    offset: new Cesium.HeadingPitchRange(0, -Cesium.Math.toRadians(30), 1200000) 
++                }).then(() => {
++                    viewer.trackedEntity = pickedEntity;
++                });
++
++                // Populate HUD
++                hudName.textContent = pickedEntity.name;
++                const props = pickedEntity.properties;
++                hudId.textContent = props ? props.catalogId.getValue() : "--";
++                hudAlt.textContent = props ? `${props.altitude.getValue()} km` : "--";
++                hudVel.textContent = props ? `${props.velocity.getValue()} km/s` : "--";
++                
++                const risk = props ? props.riskLevel.getValue() : "UNKNOWN";
++                hudRisk.textContent = risk;
++                if (risk === 'CRITICAL') {
++                    hudRisk.className = 'px-2 py-0.5 text-xs font-bold uppercase tracking-widest rounded-sm bg-red-600/20 text-red-400 border border-red-500 animate-pulse';
++                } else {
++                    hudRisk.className = 'px-2 py-0.5 text-xs font-bold uppercase tracking-widest rounded-sm bg-green-500/20 text-green-400 border border-green-500';
++                }
++
++                telemetryHud.classList.remove('hidden');
++            }
++        }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
++
++        closeHudBtn.addEventListener('click', () => {
++            viewer.trackedEntity = undefined;
++            telemetryHud.classList.add('hidden');
++        });
+     }
+ 
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

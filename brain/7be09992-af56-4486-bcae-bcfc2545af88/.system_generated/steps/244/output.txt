@@ -1,0 +1,96 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -60,21 +60,22 @@
+     let satelliteEntities = {};
+ 
+     async function initCesium() {
+-        // Initialize Cesium Viewer without any default imagery provider to bypass Ion token
++        // Clean Engine Setup
+         window.viewer = new Cesium.Viewer('cesiumContainer', {
+-            imageryProvider: false,
+-            baseLayerPicker: false,
+-            geocoder: false,
+-            homeButton: true,
+-            infoBox: true,
+-            selectionIndicator: true,
+-            navigationHelpButton: false,
+-            sceneModePicker: false,
+             animation: false,
+             timeline: false,
+-            fullscreenButton: false,
+-            requestRenderMode: false // Allow continuous rendering for smooth tracking
+-        });
++            infoBox: false,
++            selectionIndicator: false,
++            navigationHelpButton: false,
++            geocoder: false,
++            baseLayerPicker: false,
++            homeButton: false,
++            sceneModePicker: false,
++            fullscreenButton: false
++        });
++
++        // Permanently prevent near/far clipping plane blackouts
++        viewer.scene.logarithmicDepthBuffer = true;
+ 
+         // Inject 4K Token-Free Esri Imagery
+         viewer.imageryLayers.addImageryProvider(new Cesium.UrlTemplateImageryProvider({
+@@ -81,10 +81,7 @@
+             maximumLevel : 19
+         }));
+ 
+-        // Hide Cesium logo/credit for prototype cleanliness
+         viewer.cesiumWidget.creditContainer.style.display = 'none';
+-
+-        // Cinematic Scene Enhancements
+         viewer.scene.globe.enableLighting = true;
+         if (viewer.scene.skyAtmosphere) {
+             viewer.scene.skyAtmosphere.show = true;
+@@ -91,29 +91,22 @@
+ 
+-        // Performance & Camera Controls
++        // Smooth, Controlled Camera Handling
+         viewer.targetFrameRate = 120;
+-        viewer.scene.screenSpaceCameraController.inertiaSpin = 0;
+-        viewer.scene.screenSpaceCameraController.inertiaTranslate = 0;
+-        viewer.scene.screenSpaceCameraController.inertiaZoom = 0;
+-        viewer.scene.screenSpaceCameraController.minimumZoomDistance = 50000;
+-
+-        // Smart Auto-Rotate Idle Animation
+-        let isInteracting = false;
+-        let wheelTimeout = null;
+-
+-        viewer.scene.canvas.addEventListener('mousedown', () => isInteracting = true);
+-        viewer.scene.canvas.addEventListener('pointerdown', () => isInteracting = true);
+-        viewer.scene.canvas.addEventListener('wheel', () => {
+-            isInteracting = true;
+-            clearTimeout(wheelTimeout);
+-            wheelTimeout = setTimeout(() => isInteracting = false, 500);
+-        });
+-
+-        window.addEventListener('mouseup', () => isInteracting = false);
+-        window.addEventListener('pointerup', () => isInteracting = false);
++        const controller = viewer.scene.screenSpaceCameraController;
++        controller.inertiaSpin = 0.05;
++        controller.inertiaTranslate = 0.05;
++        controller.inertiaZoom = 0.05;
++        controller.minimumZoomDistance = 350000;
++        controller.maximumZoomDistance = 40000000;
++
++        // Intelligent Auto-Rotation
++        let lastInteractionTime = 0;
++        
++        viewer.scene.canvas.addEventListener('pointerdown', () => lastInteractionTime = Date.now());
++        viewer.scene.canvas.addEventListener('wheel', () => lastInteractionTime = Date.now());
+ 
+         viewer.clock.onTick.addEventListener(() => {
+-            if (!isInteracting && !viewer.trackedEntity) {
+-                viewer.scene.camera.rotateRight(0.0005);
++            if (!viewer.trackedEntity && (Date.now() - lastInteractionTime > 4000)) {
++                viewer.scene.camera.rotateRight(0.0003);
+             }
+         });
+ 
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

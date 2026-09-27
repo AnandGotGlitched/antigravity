@@ -1,0 +1,17 @@
+
+The command exited with code 0.
+Output:
+<truncated 32 lines>
+Collecting anyio<5,>=3.6.2
+  Downloading anyio-4.12.1-py3-none-any.whl (113 kB)
+     |██▉                             | 10 kB 12.8 MB/s eta 0:00:01     |█████▊                          | 20 kB 1.7 MB/s eta 0:00:01     |████████▋                       | 30 kB 2.5 MB/s eta 0:00:01     |███████████▌                    | 40 kB 3.3 MB/s eta 0:00:01     |██████████████▍                 | 51 kB 4.0 MB/s eta 0:00:01     |█████████████████▎              | 61 kB 4.8 MB/s eta 0:00:01     |████████████████████▏           | 71 kB 5.5 MB/s eta 0:00:01     |███████████████████████         | 81 kB 6.2 MB/s eta 0:00:01     |██████████████████████████      | 92 kB 7.0 MB/s eta 0:00:01     |████████████████████████████▉   | 102 kB 7.7 MB/s eta 0:00:01     |███████████████████████████████▊| 112 kB 7.7 MB/s eta 0:00:01     |████████████████████████████████| 113 kB 7.7 MB/s 
+Collecting exceptiongroup>=1.0.2
+  Downloading exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
+Collecting idna>=2.8
+  Downloading idna-3.20-py3-none-any.whl (69 kB)
+     |████▊                           | 10 kB 14.3 MB/s eta 0:00:01     |█████████▍                      | 20 kB 13.6 MB/s eta 0:00:01     |██████████████▏                 | 30 kB 19.0 MB/s eta 0:00:01     |██████████████████▉             | 40 kB 10.1 MB/s eta 0:00:01     |███████████████████████▌        | 51 kB 12.0 MB/s eta 0:00:01     |████████████████████████████▎   | 61 kB 14.3 MB/s eta 0:00:01     |████████████████████████████████| 69 kB 9.6 MB/s 
+Installing collected packages: typing-extensions, idna, exceptiongroup, typing-inspection, pydantic-core, anyio, annotated-types, starlette, pydantic, h11, click, annotated-doc, uvicorn, sgp4, fastapi
+Successfully installed annotated-doc-0.0.5 annotated-types-0.7.0 anyio-4.12.1 click-8.1.8 exceptiongroup-1.3.1 fastapi-0.128.8 h11-0.16.0 idna-3.20 pydantic-2.13.5 pydantic-core-2.46.5 sgp4-2.25 starlette-0.49.3 typing-extensions-4.16.0 typing-inspection-0.4.2 uvicorn-0.39.0
+WARNING: You are using pip version 21.2.4; however, version 26.0.1 is available.
+You should consider upgrading via the '/Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/venv/bin/python3 -m pip install --upgrade pip' command.
+

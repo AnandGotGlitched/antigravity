@@ -1,0 +1,174 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/app.js. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -108,19 +108,40 @@
+             }
+         });
+ 
++        // Set clock bounds for 24-hour window
++        const nowJD = Cesium.JulianDate.now();
++        const startTime = Cesium.JulianDate.addHours(nowJD, -12, new Cesium.JulianDate());
++        const endTime = Cesium.JulianDate.addHours(nowJD, 12, new Cesium.JulianDate());
++        viewer.clock.startTime = startTime.clone();
++        viewer.clock.stopTime = endTime.clone();
++        viewer.clock.currentTime = nowJD.clone();
++        viewer.clock.clockRange = Cesium.ClockRange.CLAMPED;
++        viewer.clock.shouldAnimate = false;
++        viewer.clock.multiplier = 1;
++
++        // Store satrec data for proximity checks
++        let satrecMap = {};
++
+         try {
+             const response = await fetch(TLE_API_URL);
+             const data = await response.json();
+-            
+-            const now = new Date();
+ 
+             data.tles.forEach(sat => {
+                 const satrec = satellite.twoline2satrec(sat.line1, sat.line2);
+-                
+-                // Calculate 90-minute orbital trajectory
+-                let positions = [];
+-                for (let i = 0; i <= 90; i++) {
+-                    const time = new Date(now.getTime() + i * 60000);
++                satrecMap[sat.name] = satrec;
++
++                // Build SampledPositionProperty: propagate from -12h to +12h in 2-minute steps
++                const positionProperty = new Cesium.SampledPositionProperty();
++                positionProperty.setInterpolationOptions({
++                    interpolationDegree: 5,
++                    interpolationAlgorithm: Cesium.LagrangePolynomialApproximation
++                });
++
++                let trailPositions = [];
++                const nowMs = Date.now();
++
++                for (let minuteOffset = -720; minuteOffset <= 720; minuteOffset += 2) {
++                    const time = new Date(nowMs + minuteOffset * 60000);
+                     const posVel = satellite.propagate(satrec, time);
+                     if (posVel.position) {
+                         const gmst = satellite.gstime(time);
+@@ -127,61 +127,65 @@
+-                        positions.push(Cesium.Cartesian3.fromDegrees(
++                        const cartesian = Cesium.Cartesian3.fromDegrees(
+                             satellite.degreesLong(posGd.longitude),
+                             satellite.degreesLat(posGd.latitude),
+                             posGd.height * 1000
+-                        ));
+-                    }
+-                }
+-
+-                const currentPosAndVel = satellite.propagate(satrec, now);
+-
+-                if (currentPosAndVel.position && positions.length > 0) {
+-                    const gmst = satellite.gstime(now);
+-                    const positionGd = satellite.eciToGeodetic(currentPosAndVel.position, gmst);
+-                    const longitude = satellite.degreesLong(positionGd.longitude);
+-                    const latitude = satellite.degreesLat(positionGd.latitude);
+-                    const height = positionGd.height * 1000; // to meters
+-                    
+-                    const isDebris = sat.name.includes('DEB');
+-                    const objType = isDebris ? 'Space Debris' : 'Active Satellite';
+-                    const reticleColor = isDebris ? '#ff4444' : '#00ffff';
+-                    
+-                    const svgData = `<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="14" stroke="${reticleColor}" stroke-width="2" fill="none" opacity="0.8"/><circle cx="16" cy="16" r="3" fill="${reticleColor}"/></svg>`;
+-                    const svgURI = 'data:image/svg+xml;base64,' + btoa(svgData);
+-
+-                    const entity = viewer.entities.add({
+-                        name: sat.name,
+-                        position: Cesium.Cartesian3.fromDegrees(longitude, latitude, height),
+-                        billboard: {
+-                            image: svgURI,
+-                            width: 24,
+-                            height: 24,
+-                        },
+-                        polyline: {
+-                            positions: positions,
+-                            width: 2,
+-                            material: Cesium.Color.fromCssColorString('#00ffff').withAlpha(0.4)
+-                        },
+-                        label: {
+-                            text: sat.name,
+-                            font: '12pt Inter',
+-                            fillColor: Cesium.Color.WHITE,
+-                            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+-                            outlineWidth: 2,
+-                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+-                            pixelOffset: new Cesium.Cartesian2(0, -9)
+-                        },
+-                        properties: {
+-                            catalogId: sat.name.split(' ').pop() || "UNKNOWN",
+-                            altitude: (height/1000).toFixed(0),
+-                            velocity: (currentPosAndVel.velocity ? Math.sqrt(Math.pow(currentPosAndVel.velocity.x, 2) + Math.pow(currentPosAndVel.velocity.y, 2) + Math.pow(currentPosAndVel.velocity.z, 2)).toFixed(2) : "7.62"),
+-                            riskLevel: isDebris ? "CRITICAL" : "NOMINAL"
+-                        }
+-                    });
+-                    
+-                    satelliteEntities[sat.name] = entity;
+-                }
+-            });
+-            
++                        );
++
++                        const julianTime = Cesium.JulianDate.fromDate(time);
++                        positionProperty.addSample(julianTime, cartesian);
++
++                        // Collect forward-only trail for the orbit line (next 90 min)
++                        if (minuteOffset >= 0 && minuteOffset <= 90) {
++                            trailPositions.push(cartesian);
++                        }
++                    }
++                }
++
++                // Get current state for metadata
++                const currentPosAndVel = satellite.propagate(satrec, new Date(nowMs));
++                const currentHeight = currentPosAndVel.position ? (() => {
++                    const gmst = satellite.gstime(new Date(nowMs));
++                    return satellite.eciToGeodetic(currentPosAndVel.position, gmst).height;
++                })() : 400;
++
++                const isDebris = sat.name.includes('DEB');
++                const reticleColor = isDebris ? '#ff4444' : '#00ffff';
++
++                const svgData = `<svg width="32" height="32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="14" stroke="${reticleColor}" stroke-width="2" fill="none" opacity="0.8"/><circle cx="16" cy="16" r="3" fill="${reticleColor}"/></svg>`;
++                const svgURI = 'data:image/svg+xml;base64,' + btoa(svgData);
++
++                const entity = viewer.entities.add({
++                    name: sat.name,
++                    position: positionProperty,
++                    billboard: {
++                        image: svgURI,
++                        width: 24,
++                        height: 24,
++                    },
++                    polyline: {
++                        positions: trailPositions,
++                        width: 2,
++                        material: Cesium.Color.fromCssColorString(reticleColor).withAlpha(0.3)
++                    },
++                    label: {
++                        text: sat.name,
++                        font: '12pt Inter',
++                        fillColor: Cesium.Color.WHITE,
++                        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
++                        outlineWidth: 2,
++                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
++                        pixelOffset: new Cesium.Cartesian2(0, -9)
++                    },
++                    properties: {
++                        catalogId: sat.name.split(' ').pop() || "UNKNOWN",
++                        altitude: currentHeight.toFixed(0),
++                        velocity: (currentPosAndVel.velocity ? Math.sqrt(Math.pow(currentPosAndVel.velocity.x, 2) + Math.pow(currentPosAndVel.velocity.y, 2) + Math.pow(currentPosAndVel.velocity.z, 2)).toFixed(2) : "7.62"),
++                        riskLevel: isDebris ? "CRITICAL" : "NOMINAL"
++                    }
++                });
++
++                satelliteEntities[sat.name] = entity;
++            });
++
+         } catch (error) {
+             console.error("Error loading TLEs for Cesium:", error);
+         }
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.

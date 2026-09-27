@@ -1,0 +1,34 @@
+The following changes were made by the replace_file_content tool to: /Users/anandgopaltiwary/.gemini/antigravity/scratch/space_debris_prototype/frontend/index.html. If relevant, proactively run terminal commands to execute this code for the USER. Don't ask for permission.
+[diff_block_start]
+@@ -151,6 +151,12 @@
+                 </div>
+                 
+                 <div class="space-y-6 flex-grow">
++                    <!-- TCA Countdown Clock -->
++                    <div class="bg-red-900/30 border border-red-500/50 p-4 rounded-sm text-center">
++                        <p class="text-xs uppercase tracking-widest text-red-400 mb-1">Time to Closest Approach (TCA)</p>
++                        <p id="camTcaClock" class="text-3xl font-mono text-red-500 font-bold tracking-widest drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">T-MINUS --:--:--</p>
++                    </div>
++
+                     <div>
+                         <p class="text-xs uppercase tracking-widest text-gray-500">Primary Object</p>
+                         <p id="camObject1" class="text-lg font-bold text-white tracking-wide">--</p>
+@@ -159,6 +159,15 @@
+                         <p id="camObject2" class="text-lg font-bold text-white tracking-wide">--</p>
+                     </div>
+ 
++                    <!-- Propulsion System Selector -->
++                    <div class="pt-4 border-t border-gray-800">
++                        <p class="text-xs uppercase tracking-wider text-gray-500 mb-3">Propulsion Type</p>
++                        <select id="camPropulsionSelect" class="w-full bg-white/5 border border-gray-600 text-white p-2 text-sm focus:outline-none focus:border-[#00ffff] transition-colors">
++                            <option value="chemical">Chemical (Hydrazine)</option>
++                            <option value="electric">Electric (Ion)</option>
++                        </select>
++                    </div>
++
+                     <!-- Burn Direction -->
+                     <div class="pt-4 border-t border-gray-800">
+                         <p class="text-xs uppercase tracking-wider text-gray-500 mb-3">Burn Direction</p>
+[diff_block_end]
+
+Please note that the above snippet only shows the MODIFIED lines from the last change. It shows up to 3 lines of unchanged lines before and after the modified lines. The actual file contents may have many more lines not shown.
